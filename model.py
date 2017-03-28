@@ -53,7 +53,7 @@ class Article(db.Model):
     article_text = db.Column(db.Text, nullable=False)
     listening_progress = db.Column(db.Time, nullable=False)
     read_status = db.Column(db.Boolean, nullable=False)
-    date_added = db.Column(db.DateTime, nullable=True)
+    date_added = db.Column(db.DateTime, nullable=False)
     url_source = db.Column(db.String(150), nullable=True)
     last_listened = db.Column(db.DateTime, nullable=True)
 
@@ -108,15 +108,95 @@ class Tagging(db.Model):
 ##############################################################################
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri="postgresql:///audioarticles"):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///audioarticles'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
 
+
+def example_data():
+
+    # creating and adding sample users
+    kallie = User(username='kfriedman', f_name='Kallie', l_name='Friedman',
+                  password='password', password_salt='salt',
+                  email='kallie@yahoo.com')
+    db.session.add(kallie)
+
+    natalie = User(username='nfriedman', f_name='Natalie', l_name='Friedman',
+                   password='password', password_salt='salt',
+                   email='natalie@hotmail.com')
+    db.session.add(natalie)
+
+    randy = User(username='rfriedman', f_name='Randy', l_name='Friedman',
+                 password='password', password_salt='salt',
+                 email='randy@yahoo.com')
+    db.session.add(randy)
+
+    # creating and adding sample articles
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    fake_article = Article(user_id='rfriedman', article_title='Randy',
+                 article_text='password', listening_progress='salt', read_status='', date_added=''
+                 url_source='randy@yahoo.com')
+    db.session.add(fake_article)
+
+    # creating and adding sample tags
+
+
+
+    # creating and adding sample taggings
+
+   
+
+    #commiting database changes
+    db.session.commit()
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
