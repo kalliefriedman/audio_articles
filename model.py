@@ -1,6 +1,7 @@
 """Models and database functions for Audio Articles project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -26,19 +27,18 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(50), nullable=True)
 
-    ds2 = db.relationship("Tag",
-                          primaryjoin='User.user_id == Article.user_id',
-                          secondary='join(Article, Tagging, Article.article_id == Taggings.article_id)',
-                          secondaryjoin='Tagging.tagging_id == Tag.tagging_id',
-                          viewonly=True,
-                          )
+    tags = db.relationship("Tag",
+                           primaryjoin='User.user_id == Article.user_id',
+                           secondary='join(Article, Tagging, Article.article_id == Tagging.article_id)',
+                           secondaryjoin='Tagging.tag_id == Tag.tag_id',
+                           viewonly=True,
+                           backref=db.backref("users"))
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<User user_id=%s username=%s f_name=%s l_name=%s email=%s" +
-                " phone=%s>>" % (self.user_id, self.username, self.f_name,
-                                 self.l_name, self.email, self.phone))
+        return ("<User user_id=%s username=%s f_name=%s l_name=%s email=%s phone=%s>>" % (self.user_id, self.username, self.f_name,
+                self.l_name, self.email, self.phone))
 
 
 class Article(db.Model):
@@ -51,7 +51,7 @@ class Article(db.Model):
     article_title = db.Column(db.String(100), nullable=False)
     article_description = db.Column(db.String(200), nullable=True)
     article_text = db.Column(db.Text, nullable=False)
-    position = db.Column(db.Time, default=0, nullable=False)
+    position = db.Column(db.Integer, default=0, nullable=False)
     read_status = db.Column(db.Boolean, nullable=False)
     date_added = db.Column(db.DateTime, nullable=False)
     url_source = db.Column(db.String(150), nullable=True)
@@ -64,14 +64,13 @@ class Article(db.Model):
     # Define relationship to tag
     tags = db.relationship("Tag",
                            secondary="taggings",
-                           backref=db.backref("article"))
+                           backref=db.backref("articles"))
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Article article_id=%s user_id=%s article_title=%s" +
-                " date_added=%s>" % (self.article_id, self.user_id,
-                                     self.article_title, self.date_added))
+        return ("<Article article_id=%s user_id=%s article_title=%s date_added=%s>" % (self.article_id, self.user_id,
+                self.article_title, self.date_added))
 
 
 class Tag(db.Model):
@@ -100,9 +99,8 @@ class Tagging(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Tagging taggings_id=%s article_id=%s" +
-                " tag_id=%s>" % (self.taggings_id,
-                                 self.article_id, self.tag_id))
+        return ("<Tagging taggings_id=%s article_id=%s tag_id=%s>" % (self.tagging_id,
+                self.article_id, self.tag_id))
 
 
 ##############################################################################
@@ -119,8 +117,7 @@ def connect_to_db(app, db_uri="postgresql:///audioarticles"):
 
 
 def example_data_users():
-
-    # creating and adding sample users
+    """creating and adding sample users"""
     kallie = User(username='kfriedman', f_name='Kallie', l_name='Friedman',
                   password='password', password_salt='salt',
                   email='kallie@yahoo.com')
@@ -138,42 +135,44 @@ def example_data_users():
 
     db.session.commit()
 
-    def example_data_users():
-    # creating and adding sample articles
+
+def example_data_articles():
+    """creating and adding sample articles"""
+
     myers_briggs = Article(user_id=1, article_title='Myers Briggs History',
-                 article_text="""Katharine Cook Briggs began her research into
-                 personality in 1917.""",
-                 read_status=False, 
-                 date_added=datetime.strptime('2013-10-19', '%Y-%m-%d'),
-                 url_source='wikipedia.com')
+                           article_text="""Katharine Cook Briggs began her research into
+                           personality in 1917.""",
+                           read_status=False,
+                           date_added=datetime.strptime('2013-10-19', '%Y-%m-%d'),
+                           url_source='wikipedia.com')
     db.session.add(myers_briggs)
 
     how_to = Article(user_id=1, article_title='How to make a great first impression',
-                 article_text="""The initial impression you make on others is, if
-                 not indelible, certainly a huge determinant in how people
-                 will feel about you for quite some time. This judgment is only
-                 magnified at job interviews -- an activity designed to make
-                 sure you fit within an organization both personally and
-                 professionally. In this Monster Special Feature, we'll cover
-                 how you can make the best possible impression at the interview.
-                 You'll learn how to prepare for the big day, send out the
-                 right nonverbal cues, relate to the interviewer and develop
-                 self-awareness of your interview image.""",
-                 read_status=False, 
-                 date_added=datetime.strptime('2013-10-19', '%Y-%m-%d'),
-                 url_source='yahoo.com')
+                     article_text="""The initial impression you make on others is, if
+                     not indelible, certainly a huge determinant in how people
+                     will feel about you for quite some time. This judgment is only
+                     magnified at job interviews -- an activity designed to make
+                     sure you fit within an organization both personally and
+                     professionally. In this Monster Special Feature, we'll cover
+                     how you can make the best possible impression at the interview.
+                     You'll learn how to prepare for the big day, send out the
+                     right nonverbal cues, relate to the interviewer and develop
+                     self-awareness of your interview image.""",
+                     read_status=False,
+                     date_added=datetime.strptime('2013-10-19', '%Y-%m-%d'),
+                     url_source='yahoo.com')
     db.session.add(how_to)
 
     amazon_polly = Article(user_id=1, article_title='Amazon Polly API',
-                 article_text="""Access to Amazon Polly requires credentials.
-                 Those credentials must have permissions to access AWS resources,
-                 such as an Amazon Polly lexicon or an Amazon Elastic Compute
-                 Cloud (Amazon EC2) instance. The following sections provide
-                 details on how you can use AWS Identity and Access Management
-                 (IAM) and Amazon Polly to help secure access to your resources.""",
-                 read_status=False,
-                 date_added=datetime.strptime('2015-10-19', '%Y-%m-%d'), 
-                 url_source='amazon.com')
+                           article_text="""Access to Amazon Polly requires credentials.
+                           Those credentials must have permissions to access AWS resources,
+                           such as an Amazon Polly lexicon or an Amazon Elastic Compute
+                           Cloud (Amazon EC2) instance. The following sections provide
+                           details on how you can use AWS Identity and Access Management
+                           (IAM) and Amazon Polly to help secure access to your resources.""",
+                           read_status=False,
+                           date_added=datetime.strptime('2015-10-19', '%Y-%m-%d'),
+                           url_source='amazon.com')
     db.session.add(amazon_polly)
 
     hurricane = Article(user_id=1, article_title='How hurricanes cause damage',
@@ -240,7 +239,8 @@ def example_data_users():
     db.session.commit()
 
 
-    # creating and adding sample tags
+def example_data_tags():
+    """creating and adding sample tags"""
     tag1 = Tag(tag_value='Recent')
     db.session.add(tag1)
 
@@ -253,7 +253,11 @@ def example_data_users():
     tag4 = Tag(tag_value='News')
     db.session.add(tag4)
 
-    # creating and adding sample taggings
+    db.session.commit()
+
+
+def example_data_taggings():
+    """creating and adding sample taggings"""
 
     tagging1 = Tagging(article_id=1, tag_id=1)
     db.session.add(tagging1)
@@ -287,8 +291,6 @@ def example_data_users():
 
     db.session.commit()
 
-    #commiting database changes
-    db.session.commit()
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
@@ -296,4 +298,5 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.create_all()
     print "Connected to DB."

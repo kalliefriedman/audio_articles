@@ -16,8 +16,7 @@ app = Flask(__name__)
 app.secret_key = "ABC"
 
 # Normally, if you use an undefined variable in Jinja2, it fails
-# silently. This is horrible. Fix this so that, instead, it raises an
-# error.
+# silently. That is bad. This will fix it.
 app.jinja_env.undefined = StrictUndefined
 
 
