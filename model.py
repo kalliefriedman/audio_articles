@@ -51,7 +51,7 @@ class Article(db.Model):
     article_title = db.Column(db.String(100), nullable=False)
     article_description = db.Column(db.String(200), nullable=True)
     article_text = db.Column(db.Text, nullable=False)
-    listening_progress = db.Column(db.Time, nullable=False)
+    position = db.Column(db.Time, default=0, nullable=False)
     read_status = db.Column(db.Boolean, nullable=False)
     date_added = db.Column(db.DateTime, nullable=False)
     url_source = db.Column(db.String(150), nullable=True)
@@ -118,7 +118,7 @@ def connect_to_db(app, db_uri="postgresql:///audioarticles"):
     db.init_app(app)
 
 
-def example_data():
+def example_data_users():
 
     # creating and adding sample users
     kallie = User(username='kfriedman', f_name='Kallie', l_name='Friedman',
@@ -136,64 +136,156 @@ def example_data():
                  email='randy@yahoo.com')
     db.session.add(randy)
 
+    db.session.commit()
+
+    def example_data_users():
     # creating and adding sample articles
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    myers_briggs = Article(user_id=1, article_title='Myers Briggs History',
+                 article_text="""Katharine Cook Briggs began her research into
+                 personality in 1917.""",
+                 read_status=False, 
+                 date_added=datetime.strptime('2013-10-19', '%Y-%m-%d'),
+                 url_source='wikipedia.com')
+    db.session.add(myers_briggs)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    how_to = Article(user_id=1, article_title='How to make a great first impression',
+                 article_text="""The initial impression you make on others is, if
+                 not indelible, certainly a huge determinant in how people
+                 will feel about you for quite some time. This judgment is only
+                 magnified at job interviews -- an activity designed to make
+                 sure you fit within an organization both personally and
+                 professionally. In this Monster Special Feature, we'll cover
+                 how you can make the best possible impression at the interview.
+                 You'll learn how to prepare for the big day, send out the
+                 right nonverbal cues, relate to the interviewer and develop
+                 self-awareness of your interview image.""",
+                 read_status=False, 
+                 date_added=datetime.strptime('2013-10-19', '%Y-%m-%d'),
+                 url_source='yahoo.com')
+    db.session.add(how_to)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    amazon_polly = Article(user_id=1, article_title='Amazon Polly API',
+                 article_text="""Access to Amazon Polly requires credentials.
+                 Those credentials must have permissions to access AWS resources,
+                 such as an Amazon Polly lexicon or an Amazon Elastic Compute
+                 Cloud (Amazon EC2) instance. The following sections provide
+                 details on how you can use AWS Identity and Access Management
+                 (IAM) and Amazon Polly to help secure access to your resources.""",
+                 read_status=False,
+                 date_added=datetime.strptime('2015-10-19', '%Y-%m-%d'), 
+                 url_source='amazon.com')
+    db.session.add(amazon_polly)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    hurricane = Article(user_id=1, article_title='How hurricanes cause damage',
+                        article_text="""Hurricanes are the most violent storms on Earth.
+                        They form near the equator over warm ocean waters. Actually,
+                        the term hurricane is used only for the large storms that form
+                        over the Atlantic Ocean or eastern Pacific Ocean.""",
+                        read_status=False,
+                        date_added=datetime.strptime('2016-10-19', '%Y-%m-%d'),
+                        url_source='weather.com')
+    db.session.add(hurricane)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    peace = Article(user_id=1, article_title='How we could acheive peace',
+                    article_text="""A peace treaty is an agreement between two or
+                    more hostile parties, usually countries or governments, which
+                    formally ends a state of war between the parties. It is
+                    different from an armistice, which is an agreement to stop
+                    hostilities, or a surrender, in which an army agrees to give
+                    up arms, or a ceasefire or truce in which the parties may agree
+                    to temporarily or permanently stop fighting.""",
+                    read_status=True,
+                    date_added=datetime.strptime('2017-03-19', '%Y-%m-%d'),
+                    url_source='wikipedia')
+    db.session.add(peace)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    engagement = Article(user_id=2, article_title='Heirarchy of Engagement',
+                         article_text="""As companies move up the hierarchy, their
+                         products become better, harder to leave, and ultimately create
+                         virtuous loops that make the product self-perpetuating.
+                         Companies that scale the hierarchy are incredibly well
+                         positioned to demonstrate growth and retention that investors
+                         are looking to see.""",
+                         read_status=False,
+                         date_added=datetime.strptime('2017-02-19', '%Y-%m-%d'),
+                         url_source='medium.com')
+    db.session.add(engagement)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    science = Article(user_id=2, article_title='The New Science of Exercise',
+                      article_text="""Ever since high school, Dr. Mark Tarnopolsky has
+                      blurred the line between jock and nerd. After working out every
+                      morning and doing 200 push-ups, he runs three miles to his lab
+                      at McMaster University in Ontario. When he was younger,
+                      Tarnopolsky dreamed of becoming a gym teacher. But now, in his
+                      backup career as a genetic metabolic neurologist, he's
+                      determined to prove that exercise can be used as medicine for
+                      even the sickest patients.""",
+                      read_status=False,
+                      date_added=datetime.strptime('2017-02-19', '%Y-%m-%d'),
+                      url_source='time.com')
+    db.session.add(science)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    labor_economy = Article(user_id=2, article_title='Matching Talent in The Digital Age',
+                            article_text="""Online talent platforms can ease a number of
+                            labor-market dysfunctions by more effectively connecting
+                            individuals with work opportunities. Such platforms include
+                            websites, like Monster.com and LinkedIn, that aggregate
+                            workforce, we believe they can generate significant benefits
+                            for economies and for individuals (exhibit).""",
+                            read_status=True,
+                            date_added=datetime.strptime('2016-06-23', '%Y-%m-%d'),
+                            url_source='mckinsey.com')
+    db.session.add(labor_economy)
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
+    db.session.commit()
 
-    fake_article = Article(user_id='rfriedman', article_title='Randy',
-                 article_text='password', listening_progress='salt', read_status='', date_added=''
-                 url_source='randy@yahoo.com')
-    db.session.add(fake_article)
 
     # creating and adding sample tags
+    tag1 = Tag(tag_value='Recent')
+    db.session.add(tag1)
 
+    tag2 = Tag(tag_value='Favorite')
+    db.session.add(tag2)
 
+    tag3 = Tag(tag_value='Psychology')
+    db.session.add(tag3)
+
+    tag4 = Tag(tag_value='News')
+    db.session.add(tag4)
 
     # creating and adding sample taggings
 
-   
+    tagging1 = Tagging(article_id=1, tag_id=1)
+    db.session.add(tagging1)
+
+    tagging2 = Tagging(article_id=1, tag_id=1)
+    db.session.add(tagging2)
+
+    tagging3 = Tagging(article_id=8, tag_id=1)
+    db.session.add(tagging3)
+
+    tagging4 = Tagging(article_id=7, tag_id=1)
+    db.session.add(tagging4)
+
+    tagging5 = Tagging(article_id=6, tag_id=2)
+    db.session.add(tagging5)
+
+    tagging6 = Tagging(article_id=5, tag_id=2)
+    db.session.add(tagging6)
+
+    tagging7 = Tagging(article_id=4, tag_id=2)
+    db.session.add(tagging7)
+
+    tagging8 = Tagging(article_id=3, tag_id=3)
+    db.session.add(tagging8)
+
+    tagging9 = Tagging(article_id=3, tag_id=3)
+    db.session.add(tagging9)
+
+    tagging10 = Tagging(article_id=8, tag_id=4)
+    db.session.add(tagging10)
+
+    db.session.commit()
 
     #commiting database changes
     db.session.commit()
