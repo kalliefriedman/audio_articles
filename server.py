@@ -27,96 +27,86 @@ def index():
     return render_template("homepage.html")
 
 
-# @app.route("/register", methods=["GET"])
-# def register_form():
-#     """Renders registration form"""
+@app.route("/register", methods=["GET"])
+def register_form():
+    """Renders registration form"""
 
-#     return render_template("register_form.html")
-
-
-# @app.route("/register-process", methods=["POST"])
-# def register_process():
-#     """Takes in four inputs via POST request and returns redirect to hompage.
-#     Adds new user to the database if they don't exist."""
-
-#     email = request.form.get("email")
-#     password = request.form.get("password")
-#     age = request.form.get("age")
-#     zipcode = request.form.get("zipcode")
-
-#     if (User.query.filter_by(email=email).all()) == []:
-#         new_user = User(email=email, password=password, age=age,
-#                         zipcode=zipcode)
-
-#         db.session.add(new_user)
-#         db.session.commit()
-
-#         user_object = User.query.filter_by(email=email).first()
-#         session["user_id"] = user_object.user_id
-
-#     else:
-#         flash("This user already exists. Please log in.")
-#         return redirect("/login")
-
-#     return redirect("/")
+    return render_template("register_form.html")
 
 
-# @app.route("/login", methods=["GET"])
-# def login_form():
-#     """Renders login template"""
-#     return render_template("login.html")
+@app.route("/register-process", methods=["POST"])
+def register_process():
+    """Takes in four inputs via POST request and returns redirect to hompage.
+    Adds new user to the database if they don't exist."""
+
+    username = request.form.get("username")
+    f_name = request.form.get("f_name")
+    l_name = request.form.get("l_name")
+    password = request.form.get("password")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+
+    if (User.query.filter_by(email=email).all()) == []:
+        new_user = User(username=username, f_name=f_name, l_name=l_name, password=password, email=email,
+                        phone=phone, password_salt="")
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        user_object = User.query.filter_by(email=email).first()
+        user_id = user_object.user_id
+        session["user_id"] = user_id
+
+    else:
+        flash("This user already exists. Please log in.")
+        return redirect("/login")
+
+    return redirect("/user-articles")
 
 
-# @app.route("/login-process", methods=["POST"])
-# def login_process():
-#     """Takes in email and password via post request and returns a redirect to
-#     either homepage or login page"""
-
-#     email = request.form.get("email")
-#     password = request.form.get("password")
-
-#     user_object = User.query.filter_by(email=email).first()
-
-#     # If user exists and password is correct, redirect to homepage
-#     if user_object and (user_object.password == password):
-#         session["user_id"] = user_object.user_id
-#         flash('You were successfully logged in')
-#         return redirect("/")
-#     # If either email or password incorrect, show message to user.
-#     else:
-#         flash("This combination of username and password doesn't exist")
-#         return redirect("/login")
+@app.route("/login", methods=["GET"])
+def login_form():
+    """Renders login template"""
+    return render_template("login_form.html")
 
 
-# @app.route("/logout", methods=["POST"])
-# def logout_process():
-#     """Takes in a post request to logout and returns redirect to homepage."""
-#     del session["user_id"]
-#     flash('You were successfully logged out')
-#     return redirect("/")
+@app.route("/login-process", methods=["POST"])
+def login_process():
+    """Takes in email or username, and password via post request and returns a redirect to
+    either homepage or login page"""
+
+    username_or_email = request.form.get("username_or_email")
+    password = request.form.get("password")
+
+    if User.query.filter_by(email=username_or_email).all() != []:
+        user_object = User.query.filter_by(email=username_or_email).first()
+    else:
+        user_object = User.query.filter_by(username=username_or_email).first()
+
+    # If user exists and password is correct, redirect to user_articles page
+    if user_object and (user_object.password == password):
+        session["user_id"] = user_object.user_id
+        flash('You were successfully logged in.')
+        return redirect("/user-articles")
+    # If either email or password incorrect, show message to user.
+    else:
+        flash("This combination of username and password doesn't exist")
+        return redirect("/login")
 
 
-# @app.route("/rating-process/<movie_id>", methods=["POST"])
-# def rate_process(movie_id):
-#     """Takes in single inputs via POST request and returns redirect to movie
-#     details. Adds new rating to the database or updates existing record."""
+@app.route("/logout", methods=["POST"])
+def logout_process():
+    """Takes in a post request to logout and returns redirect to homepage."""
+    del session["user_id"]
+    flash('You were successfully logged out')
+    return redirect("/")
 
-#     movie_id = movie_id
-#     rating = int(request.form.get("rating"))
-#     user_id = session.get("user_id")
-#     existing_rating = Rating.query.filter(Rating.user_id == user_id,
-#                                           Rating.movie_id == movie_id).first()
 
-#     if existing_rating:
-#         existing_rating.score = rating
-
-#     else:
-#         new_rating = Rating(movie_id=movie_id, user_id=user_id, score=rating)
-#         db.session.add(new_rating)
-
-#     db.session.commit()
-
-#     return redirect("/movie/" + movie_id)
+@app.route("/user-articles/<user_id>")
+def display_user_articles(user_id):
+    """Takes in URL input for user_id and renders that user articles profile."""
+    user_object = User.query.filter_by(user_id=user_id).one()
+    return render_template("user-articles.html", user_object=user_object)
 
 
 if __name__ == "__main__":
@@ -129,6 +119,5 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-
 
     app.run(port=5000, host='0.0.0.0')
