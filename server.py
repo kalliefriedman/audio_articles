@@ -22,9 +22,12 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route('/')
 def index():
-    """Homepage."""
-
-    return render_template("homepage.html")
+    """Renders homepage if user isn't logged in. Otherwise redirects user to user-articles."""
+    user_id_value = session.get("user_id")
+    if user_id_value:
+        return redirect("user-articles/" + str(user_id_value))
+    else:
+        return render_template("homepage.html")
 
 
 @app.route("/register", methods=["GET"])
@@ -61,15 +64,18 @@ def register_process():
         flash("This user already exists. Please log in.")
         return redirect("/login")
 
-    return redirect("/user-articles")
+    return redirect("user-articles/" + str(user_id))
 
 
 @app.route("/login", methods=["GET"])
 def login_form():
-    """Renders login template"""
+    """Renders login template."""
+
     return render_template("login_form.html")
 
 
+
+#what happens if i use the URL to switch between users? Which account does the article get added to? SHouldn't be able to make changes
 @app.route("/login-process", methods=["POST"])
 def login_process():
     """Takes in email or username, and password via post request and returns a redirect to
@@ -87,7 +93,7 @@ def login_process():
     if user_object and (user_object.password == password):
         session["user_id"] = user_object.user_id
         flash('You were successfully logged in.')
-        return redirect("/user-articles")
+        return redirect("/user-articles/<userid>")
     # If either email or password incorrect, show message to user.
     else:
         flash("This combination of username and password doesn't exist")
@@ -102,11 +108,50 @@ def logout_process():
     return redirect("/")
 
 
+@app.route("/create-article")
+def display_create_article():
+    """Renders create article form"""
+    return render_template("article_add.html")
+
+
 @app.route("/user-articles/<user_id>")
 def display_user_articles(user_id):
     """Takes in URL input for user_id and renders that user articles profile."""
     user_object = User.query.filter_by(user_id=user_id).one()
-    return render_template("user-articles.html", user_object=user_object)
+    return render_template("user_articles.html", user_object=user_object)
+
+
+@app.route("/article-add-process", methods=["POST"])
+def article_add_process():
+    """Takes in four inputs via POST request and adds article to database.
+    Redirects to article closeup."""
+#make sure only the logged in user can add new article
+    article_title = request.form.get("article_title")
+    article_description = request.form.get("article_description")
+    article_text = request.form.get("article_text")
+    url_source = request.form.get("url_source")
+    user_id_value = session.get("user_id")
+# in future could verify article by same title doesn't exist
+
+    new_article = Article(article_title=article_title, user_id=user_id_value,
+                          article_description=article_description,
+                          article_text=article_text, url_source=url_source)
+
+    db.session.add(new_article)
+    db.session.commit()
+
+    article_object = Article.query.filter_by(article_text=article_text).first()
+    article_id = article_object.article_id
+
+    return redirect("article-closeup/" + str(article_id))
+
+
+@app.route("/article-closeup/<article_id>")
+def article_closeup(article_id):
+    """Takes in an article ID and displays that article for playback and edit purposes"""
+
+    article_object = Article.query.filter_by(article_id=article_id).one()
+    return render_template("article_closeup.html", article_object=article_object)
 
 
 if __name__ == "__main__":

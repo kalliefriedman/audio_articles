@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>{% block title %} Put your title here {% endblock %}</title>
+</head>
+
+<body>
+  {% if session.get("user_id") %}
+        <form action="/logout" method="POST">
+        <input type="submit" value="Logout">
+        </form>
+  {% else %}
+        <form action="/login" method="GET">
+        <input type="submit" value="Login">
+        </form>
+
+        <form action="/register" method="GET">
+        <input type="submit" value="Register">
+        </form>
+  {% endif %}
+
+  {% block content %} put your content here {% endblock %}
+
+</body>
+</html>

@@ -52,8 +52,8 @@ class Article(db.Model):
     article_description = db.Column(db.String(200), nullable=True)
     article_text = db.Column(db.Text, nullable=False)
     position = db.Column(db.Integer, default=0, nullable=False)
-    read_status = db.Column(db.Boolean, nullable=False)
-    date_added = db.Column(db.DateTime, nullable=False)
+    read_status = db.Column(db.Boolean, default=False, nullable=False)
+    date_added = db.Column(db.DateTime, default=datetime.now, nullable=False)
     url_source = db.Column(db.String(150), nullable=True)
     last_listened = db.Column(db.DateTime, nullable=True)
 

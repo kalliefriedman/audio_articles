@@ -1,0 +1,17 @@
+{% block title %} Login {% endblock %}
+
+{% block content %}
+
+<h1>Login</h1>
+
+<form action="/login-process" method="POST">
+Username or Email:    <input type="text" name="username_or_email"> <br>
+Password: <input type="text" name="password"> <br>
+<input type="submit" value="login">
+</form>
+
+{% endblock %}
+
+<!--   <script type="text/javascript">
+ TODO add code to hide logout button, registration button.
+  </script> -->
