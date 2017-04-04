@@ -2,14 +2,42 @@
 
 from jinja2 import StrictUndefined
 
-from flask import (Flask, render_template, redirect, request, flash,
+from flask import (Flask, Response, render_template, redirect, request, flash,
                    session, jsonify)
 
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Article, Tag, Tagging, connect_to_db, db
 
+from collections import namedtuple
+from boto3 import Session
+from botocore.exceptions import BotoCoreError, ClientError
 
+
+#static variables for amazon Polly API
+ResponseStatus = namedtuple("HTTPStatus",
+                            ["code", "message"])
+
+ResponseData = namedtuple("ResponseData",
+                          ["status", "content_type", "data_stream"])
+
+# Mapping the output format used in the client to the content type for the
+# response
+AUDIO_FORMATS = {"ogg_vorbis": "audio/ogg",
+                 "mp3": "audio/mpeg",
+                 "pcm": "audio/wave; codecs=1"}
+CHUNK_SIZE = 1024
+HTTP_STATUS = {"OK": ResponseStatus(code=200, message="OK"),
+               "BAD_REQUEST": ResponseStatus(code=400, message="Bad request"),
+               "NOT_FOUND": ResponseStatus(code=404, message="Not found"),
+               "INTERNAL_SERVER_ERROR": ResponseStatus(code=500, message="Internal server error")}
+PROTOCOL = "http"
+ROUTE_INDEX = "/index.html"
+ROUTE_VOICES = "/voices"
+ROUTE_READ = "/read"
+
+
+#creating flask app
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -152,6 +180,33 @@ def article_closeup(article_id):
 
     article_object = Article.query.filter_by(article_id=article_id).one()
     return render_template("article_closeup.html", article_object=article_object)
+
+
+@app.route("/read")
+def read_text():
+
+    session = Session(profile_name="adminuser")
+    polly = session.client("polly")
+
+    # text = request.args.get("text")
+    # voiceId = request.args.get("voiceId")
+    # outputFormat = request.args.get("outputFormat")
+
+    # Request speech synthesis
+    response = polly.synthesize_speech(Text='Hi Kallie, my name is Russell.',
+                                       VoiceId='Russell',
+                                       OutputFormat='mp3')
+
+    audio_stream = response.get("AudioStream")
+
+    def generate():
+            data = audio_stream.read(1024)
+            while data:
+                yield data
+                data = audio_stream.read(1024)
+    return Response(generate(), mimetype='audio/mpeg')
+    #read out mp3 file in Flask/Javascript/Python/whatever
+    # return response
 
 
 if __name__ == "__main__":
