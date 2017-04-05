@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %} User Articles {% endblock %}
+{% block title %} 
+User Articles 
+{% endblock %}
 
 {% block content %}
+
 <br><br>
-<h1>{{ article_object.article_title }}!</h1>
+<h1>{{ article_object.article_title }}</h1>
 <br>
+
 {% if article_object.article_description %}
 Description: {{ article_object.article_descripton }}
 <br><br>
@@ -13,10 +17,8 @@ Description: {{ article_object.article_descripton }}
 
 Text: {{ article_object.article_text }} 
 <br><br>
-
 Read Status: {{ article_object.read_status }}
 <br><br>
-
 Added: {{ article_object.date_added.strftime('%m-%d-%Y') }}
 <br><br>
 
@@ -30,4 +32,30 @@ Last Listened: {{ article_object.url_source }}
 <br><br>
 {% endif %}
 
+<form id="input" method="GET" action="/read">
+
+Select a voice:
+    <select name="voice">
+        {% for voice in all_voices %}
+            {% if 'en' in voice["LanguageCode"] %}
+            <option value="{{ voice['Name'] }}">{{ voice["Name"] }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+
+    <input type="hidden" name="text" value="{{ article_object.article_text }}">
+
+    <input type="submit" value="Read text" id="submit" >
+
+
+</form>
+
 {% endblock %}
+             
+
+
+
+
+
+
+

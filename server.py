@@ -102,7 +102,6 @@ def login_form():
     return render_template("login_form.html")
 
 
-
 #what happens if i use the URL to switch between users? Which account does the article get added to? SHouldn't be able to make changes
 @app.route("/login-process", methods=["POST"])
 def login_process():
@@ -179,22 +178,29 @@ def article_closeup(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
 
     article_object = Article.query.filter_by(article_id=article_id).one()
-    return render_template("article_closeup.html", article_object=article_object)
-
-
-@app.route("/read")
-def read_text():
-
     session = Session(profile_name="adminuser")
     polly = session.client("polly")
 
     # text = request.args.get("text")
     # voiceId = request.args.get("voiceId")
     # outputFormat = request.args.get("outputFormat")
+    response = polly.describe_voices()
+    all_voices = response.get('Voices')
+    print all_voices
+    return render_template("article_closeup.html", article_object=article_object, all_voices=all_voices)
 
+
+@app.route("/read", methods=["GET"])
+def read_text():
+
+    session = Session(profile_name="adminuser")
+    polly = session.client("polly")
+
+    text = request.args.get("text")
+    voice_id = request.args.get("voice")
     # Request speech synthesis
-    response = polly.synthesize_speech(Text='Hi Kallie, my name is Russell.',
-                                       VoiceId='Russell',
+    response = polly.synthesize_speech(Text=text,
+                                       VoiceId=voice_id,
                                        OutputFormat='mp3')
 
     audio_stream = response.get("AudioStream")
