@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %} Homepage {% endblock %}
+{% block title %} Add Article {% endblock %}
 
 {% block content %}
 
 
 <form action="/article-add-process" method="POST">
 Title:    <input type="text" name="article_title"> <br>
-Desription (Optional): <input type="text" name="article_description"> <br>
+Description (Optional): <input type="text" name="article_description"> <br>
 Text: <textarea name="article_text" rows='30' cols='80'></textarea> <br>
 URL Source (Optional)<input type="text" name="url_source"> <br>
 <input type="submit" value="Save">

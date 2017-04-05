@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %} User Articles {% endblock %}
+  {% block title %} 
+    User Articles 
+  {% endblock %}
 
-{% block content %}
-<br><br>
-<h1>Welcome, {{ user_object.f_name }}!</h1>
-<br>
-<br>
-<br>
-  {% if session.get("user_id") == user_object.user_id %}
-    <a href="/create-article">Add Article</a>
-  {% endif %}
-<br>
-{% for article in user_object.articles %}
-    <ul>
-      <li>
-        <a href="/article-closeup/{{ article.article_id }}">
-              {{ article.article_title }}</a>
-      </li>
-    </ul>
-{% endfor %}
+  {% block content %}
+    <br><br>
+      <h1>Welcome, {{ user_object.f_name }}!</h1>
+    <br>
+    {% if session.get("user_id") == user_object.user_id %}
+      <a href="/create-article">Add Article</a>
+    {% endif %}
+    <br>
+    {% for article in user_object.articles %}
+      <ul>
+        <li>
+          <a href="/article-closeup/{{ article.article_id }}">
+          {{ article.article_title }}</a>
+        </li>
+      </ul>
+    {% endfor %}
 
-{% endblock %}
+  {% endblock %}

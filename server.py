@@ -120,7 +120,7 @@ def login_process():
     if user_object and (user_object.password == password):
         session["user_id"] = user_object.user_id
         flash('You were successfully logged in.')
-        return redirect("/user-articles/<userid>")
+        return redirect("/user-articles/" + str(user_object.user_id))
     # If either email or password incorrect, show message to user.
     else:
         flash("This combination of username and password doesn't exist")
@@ -188,6 +188,14 @@ def article_closeup(article_id):
     all_voices = response.get('Voices')
     print all_voices
     return render_template("article_closeup.html", article_object=article_object, all_voices=all_voices)
+
+
+@app.route("/article-edit/<article_id>")
+def article_edit(article_id):
+    """Takes in an article ID and displays that article for playback and edit purposes"""
+
+    article_object = Article.query.filter_by(article_id=article_id).one()
+    return render_template("article_edit.html", article_object=article_object)
 
 
 @app.route("/read", methods=["GET"])

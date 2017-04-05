@@ -1,55 +1,57 @@
 {% extends 'base.html' %}
 
 {% block title %} 
-User Articles 
+  Article Closeup 
 {% endblock %}
 
 {% block content %}
+  <form action="/user-articles/{{ article_object.user_id }}">
+    <input type="submit" value="View your articles" />
+  </form>
 
-<br><br>
-<h1>{{ article_object.article_title }}</h1>
-<br>
+  <form action="/article-edit/{{ article_object.article_id }}">
+    <input type="submit" value="Edit article" />
+  </form>
 
-{% if article_object.article_description %}
-Description: {{ article_object.article_descripton }}
-<br><br>
-{% endif %}
+  <br><br>
+    <h1>{{ article_object.article_title }}</h1>
+  <br>
 
-Text: {{ article_object.article_text }} 
-<br><br>
-Read Status: {{ article_object.read_status }}
-<br><br>
-Added: {{ article_object.date_added.strftime('%m-%d-%Y') }}
-<br><br>
+  {% if article_object.article_description %}
+    Description: {{ article_object.article_description }}
+    <br><br>
+  {% endif %}
 
-{% if article_object.url_source %}
-URL Source: {{ article_object.url_source }}
-<br><br>
-{% endif %}
+  Text: {{ article_object.article_text }} 
+  <br><br>
+  Read Status: {{ article_object.read_status }}
+  <br><br>
+  Added: {{ article_object.date_added.strftime('%m-%d-%Y') }}
+  <br><br>
 
-{% if article_object.last_listened %}
-Last Listened: {{ article_object.url_source }}
-<br><br>
-{% endif %}
+  {% if article_object.url_source %}
+    URL Source: {{ article_object.url_source }}
+    <br><br>
+  {% endif %}
 
-<form id="input" method="GET" action="/read">
+  {% if article_object.last_listened %}
+    Last Listened: {{ article_object.url_source }}
+    <br><br>
+  {% endif %}
 
-Select a voice:
-    <select name="voice">
+  <form id="input" method="GET" action="/read">
+
+    Select a voice:
+      <select name="voice">
         {% for voice in all_voices %}
-            {% if 'en' in voice["LanguageCode"] %}
+          {% if 'en' in voice["LanguageCode"] %}
             <option value="{{ voice['Name'] }}">{{ voice["Name"] }}</option>
-            {% endif %}
+          {% endif %}
         {% endfor %}
-    </select>
-
+      </select>
     <input type="hidden" name="text" value="{{ article_object.article_text }}">
-
     <input type="submit" value="Read text" id="submit" >
-
-
-</form>
-
+  </form>
 {% endblock %}
              
 
