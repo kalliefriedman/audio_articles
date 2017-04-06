@@ -9,9 +9,13 @@
 
     <form action="/login-process" method="POST">
       Username or Email:    <input type="text" name="username_or_email"> <br>
-      Password: <input type="text" name="password"> <br>
+      Password: <input type="text" name="password"> <br><br>
       <input type="submit" value="login">
     </form>
+
+<script type="text/javascript">
+$("#login_button").hide();
+</script>
 
   {% endblock %}
 

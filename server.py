@@ -206,6 +206,7 @@ def read_text():
 
     text = request.args.get("text")
     voice_id = request.args.get("voice")
+    article_id = request.args.get("article_id")
     # Request speech synthesis
     response = polly.synthesize_speech(Text=text,
                                        VoiceId=voice_id,
@@ -213,14 +214,19 @@ def read_text():
 
     audio_stream = response.get("AudioStream")
 
+    new_article = Article(article_title=article_title, user_id=user_id_value,
+                          article_description=article_description,
+                          article_text=article_text, url_source=url_source)
+
+    db.session.add(new_article)
+    db.session.commit()
+
     def generate():
             data = audio_stream.read(1024)
             while data:
                 yield data
                 data = audio_stream.read(1024)
     return Response(generate(), mimetype='audio/mpeg')
-    #read out mp3 file in Flask/Javascript/Python/whatever
-    # return response
 
 
 if __name__ == "__main__":

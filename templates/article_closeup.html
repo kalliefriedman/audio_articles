@@ -50,6 +50,7 @@
         {% endfor %}
       </select>
     <input type="hidden" name="text" value="{{ article_object.article_text }}">
+    <input type="hidden" name="article_id" value="{{ article_object.article_id }}">
     <input type="submit" value="Read text" id="submit" >
   </form>
 {% endblock %}

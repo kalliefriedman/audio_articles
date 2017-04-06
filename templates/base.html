@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html>
   <head>
     <title>
@@ -7,6 +6,10 @@
         Put your title here 
       {% endblock %}
     </title>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+      integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+      crossorigin="anonymous">
+    </script>
   </head>
 
   <body>
@@ -15,11 +18,11 @@
         <input type="submit" value="Logout">
       </form>
     {% else %}
-      <form action="/login" method="GET">
+      <form id="login_button" action="/login" method="GET">
         <input type="submit" value="Login">
       </form>
 
-      <form action="/register" method="GET">
+      <form id="register_button" action="/register" method="GET">
         <input type="submit" value="Register">
       </form>
     {% endif %}
