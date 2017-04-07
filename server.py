@@ -10,8 +10,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import User, Article, Tag, Tagging, connect_to_db, db
 
 from collections import namedtuple
-from boto3 import Session
+from boto3 import Session as BotoSession
 from botocore.exceptions import BotoCoreError, ClientError
+from datetime import datetime
 
 
 #static variables for amazon Polly API
@@ -178,8 +179,8 @@ def article_closeup(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
 
     article_object = Article.query.filter_by(article_id=article_id).one()
-    session = Session(profile_name="adminuser")
-    polly = session.client("polly")
+    boto_session = BotoSession(profile_name="adminuser")
+    polly = boto_session.client("polly")
 
     # text = request.args.get("text")
     # voiceId = request.args.get("voiceId")
@@ -201,8 +202,8 @@ def article_edit(article_id):
 @app.route("/read", methods=["GET"])
 def read_text():
 
-    session = Session(profile_name="adminuser")
-    polly = session.client("polly")
+    boto_session = BotoSession(profile_name="adminuser")
+    polly = boto_session.client("polly")
 
     text = request.args.get("text")
     voice_id = request.args.get("voice")
@@ -214,18 +215,19 @@ def read_text():
 
     audio_stream = response.get("AudioStream")
 
-    new_article = Article(article_title=article_title, user_id=user_id_value,
-                          article_description=article_description,
-                          article_text=article_text, url_source=url_source)
-
-    db.session.add(new_article)
-    db.session.commit()
+    article_object = Article.query.filter_by(article_id=article_id).one()
+    if "user_id" in session:
+        session_user_id = session["user_id"]
+        if article_object.user_id == session_user_id:
+            article_object.read_status = True
+            article_object.last_listened = datetime.now()
+            db.session.commit()
 
     def generate():
+        data = audio_stream.read(1024)
+        while data:
+            yield data
             data = audio_stream.read(1024)
-            while data:
-                yield data
-                data = audio_stream.read(1024)
     return Response(generate(), mimetype='audio/mpeg')
 
 

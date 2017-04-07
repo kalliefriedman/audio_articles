@@ -35,7 +35,7 @@
   {% endif %}
 
   {% if article_object.last_listened %}
-    Last Listened: {{ article_object.url_source }}
+    Last Listened: {{ article_object.last_listened.strftime('%m-%d-%Y %I:%M%p') }}
     <br><br>
   {% endif %}
 
