@@ -151,8 +151,8 @@ def logout_process():
 @app.route("/create-article")
 def display_create_article():
     """Renders create article form"""
-    user_id_value = session.get("user_id")
-    user_id_from_form = request.args.get("user_id_from_form")
+    user_id_value = int(session.get("user_id"))
+    user_id_from_form = int(request.args.get("user_id_from_form"))
     if user_id_value:
         if user_id_value == user_id_from_form:
             return render_template("article_add.html", user_id=user_id_from_form)
@@ -182,8 +182,8 @@ def article_add_process():
     article_description = request.form.get("article_description")
     article_text = request.form.get("article_text")
     url_source = request.form.get("url_source")
-    user_id_from_form = request.form.get("user_id")
-    user_id_value = session.get("user_id")
+    user_id_from_form = int(request.form.get("user_id"))
+    user_id_value = int(session.get("user_id"))
 # in future could verify article by same title doesn't exist
     if user_id_value:
         if user_id_value == user_id_from_form:
@@ -205,7 +205,7 @@ def article_add_process():
 @app.route("/article-closeup/<article_id>")
 def article_closeup(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
-    user_id_value = session.get("user_id")
+    user_id_value = int(session.get("user_id"))
     article_object = Article.query.filter_by(article_id=article_id).one()
     if user_id_value:
         if article_object.user_id == user_id_value:
@@ -227,7 +227,7 @@ def article_closeup(article_id):
 @app.route("/article-edit/<article_id>")
 def article_edit(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
-    user_id_value = session.get("user_id")
+    user_id_value = int(session.get("user_id"))
     article_object = Article.query.filter_by(article_id=article_id).one()
     if user_id_value == article_object.user_id:
         return render_template("article_edit.html", article_object=article_object)
@@ -237,7 +237,7 @@ def article_edit(article_id):
 
 @app.route("/read", methods=["GET"])
 def read_text():
-    user_id_value = session.get("user_id")
+    user_id_value = int(session.get("user_id"))
     if user_id_value:
         boto_session = BotoSession(profile_name="adminuser")
         polly = boto_session.client("polly")
