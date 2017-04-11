@@ -1,5 +1,7 @@
 """Models and database functions for Audio Articles project."""
 
+
+
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 

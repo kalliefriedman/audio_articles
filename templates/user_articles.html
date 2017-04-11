@@ -5,11 +5,24 @@
   {% endblock %}
 
   {% block content %}
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
+
     <br><br>
       <h1>Welcome, {{ user_object.f_name }}!</h1>
     <br>
     {% if session.get("user_id") == user_object.user_id %}
-      <a href="/create-article">Add Article</a>
+      <form action="/create-article">
+        <input type="hidden" name="user_id_from_form" value="{{ user_object.user_id }}"
+        <input type="submit" value="Add Article">
+      </form>
     {% endif %}
     <br>
     {% for article in user_object.articles %}

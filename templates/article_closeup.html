@@ -39,20 +39,40 @@
     <br><br>
   {% endif %}
 
-  <form id="input" method="GET" action="/read">
+  <form id="submit" method="GET" action="/read">
 
     Select a voice:
-      <select name="voice">
+      <select name="voice" id="voice-id">
         {% for voice in all_voices %}
           {% if 'en' in voice["LanguageCode"] %}
             <option value="{{ voice['Name'] }}">{{ voice["Name"] }}</option>
           {% endif %}
         {% endfor %}
       </select>
-    <input type="hidden" name="text" value="{{ article_object.article_text }}">
-    <input type="hidden" name="article_id" value="{{ article_object.article_id }}">
-    <input type="submit" value="Read text" id="submit" >
+    <input type="hidden" name="text" id="text" value="{{ article_object.article_text }}">
+    <input type="hidden" name="article_id" id="article-id" value="{{ article_object.article_id }}">
+    <input type="submit" value="Read text" id="submit_read_request" >
   </form>
+
+<audio id="audio_controls" controls="controls" src="">
+  Your browser does not support the <code>audio</code> element.
+</audio>
+
+<script type="text/javascript">
+$("#audio_controls").hide();
+
+// prevents default and makes call to read route, constructing URL, on click
+$("#submit_read_request").click(function(event){
+    event.preventDefault();
+    var voiceId = $("#voice-id").val();
+    var articleText = $("#text").val();
+    var articleId = $("#article-id").val();
+    var src = "/read?text=" + articleText + "&article_id=" + articleId + "&voice=" + voiceId;
+    $("#audio_controls").attr("src", src);
+    $("#audio_controls").show(); 
+                                    });
+</script>
+
 {% endblock %}
              
 

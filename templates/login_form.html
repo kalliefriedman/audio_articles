@@ -4,12 +4,21 @@
   {% endblock %}
 
   {% block content %}
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
 
     <h1>Login</h1>
 
     <form action="/login-process" method="POST">
       Username or Email:    <input type="text" name="username_or_email"> <br>
-      Password: <input type="text" name="password"> <br><br>
+      Password: <input type="password" name="password"> <br><br>
       <input type="submit" value="login">
     </form>
 

@@ -6,6 +6,16 @@
   {% endblock %}
 
   {% block content %}
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
+
 
   <h1>Register</h1>
 
@@ -13,7 +23,7 @@
       Username:  <input type="text" name="username"> <br>
       First Name: <input type="text" name="f_name"> <br>
       Last Name:  <input type="text" name="l_name"> <br>
-      Password:   <input type="text" name="password"> <br>
+      Password:   <input type="password" name="password"> <br>
       Email:      <input type="text" name="email"> <br>
       Phone:      <input type="text" name="phone"> <br><br>
       <input type="submit" value="Create Account">
