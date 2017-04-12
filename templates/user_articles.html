@@ -18,10 +18,10 @@
     <br><br>
       <h1>Welcome, {{ user_object.f_name }}!</h1>
     <br>
-    {% if session.get("user_id") == user_object.user_id %}
+    {% if session.get("user_id")|string() == user_object.user_id|string() %}
       <form action="/create-article">
-        <input type="hidden" name="user_id_from_form" value="{{ user_object.user_id }}"
-        <input type="submit" value="Add Article">
+        <input type="hidden" name="user_id_from_form" value="{{ user_object.user_id }}">
+        <input type="submit" name="submit" value="Add Article">
       </form>
     {% endif %}
     <br>
