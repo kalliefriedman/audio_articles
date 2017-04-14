@@ -4,7 +4,21 @@
   Article Closeup 
 {% endblock %}
 
+{% block page_specific_js %} 
+<script src="/static/article_closeup.js"></script>        
+{% endblock %}
+
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
+
   <form action="/user-articles/{{ article_object.user_id }}">
     <input type="submit" value="View your articles" />
   </form>
@@ -16,6 +30,35 @@
   <br><br>
     <h1>{{ article_object.article_title }}</h1>
   <br>
+
+<h4>Tags: 
+  <span id="tags">{% for tag in article_object.tags %}
+  {{ tag }} * 
+  {% endfor %}</span>
+</h4>
+<button id="add-tags">Add Tag</button><br><br>
+
+    <div id="add-tag-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Add Tag</h4>
+          </div>
+          <div class="modal-body">
+            <form id="add-tag-form">
+          Tag Name: <input id="tag-field" type="text" name="tag-name">
+                    <input type="hidden" name="article_id" id="article-id" value="{{ article_object.article_id }}">
+        </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <input form="add-tag-form" id="tag-form-button" type="submit" class="btn btn-primary" value="Add Tag">
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
   {% if article_object.article_description %}
     Description: {{ article_object.article_description }}
@@ -57,21 +100,6 @@
 <audio id="audio_controls" controls="controls" src="">
   Your browser does not support the <code>audio</code> element.
 </audio>
-
-<script type="text/javascript">
-$("#audio_controls").hide();
-
-// prevents default and makes call to read route, constructing URL, on click
-$("#submit_read_request").click(function(event){
-    event.preventDefault();
-    var voiceId = $("#voice-id").val();
-    var articleText = $("#text").val();
-    var articleId = $("#article-id").val();
-    var src = "/read?text=" + articleText + "&article_id=" + articleId + "&voice=" + voiceId;
-    $("#audio_controls").attr("src", src);
-    $("#audio_controls").show(); 
-                                    });
-</script>
 
 {% endblock %}
              

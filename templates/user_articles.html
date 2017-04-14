@@ -5,7 +5,8 @@
   {% endblock %}
 
   {% block content %}
-  {% with messages = get_flashed_messages() %}
+  
+{% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
     {% for message in messages %}
@@ -14,7 +15,7 @@
     </ul>
     {% endif %}
   {% endwith %}
-
+  
     <br><br>
       <h1>Welcome, {{ user_object.f_name }}!</h1>
     <br>
@@ -24,6 +25,14 @@
         <input type="submit" name="submit" value="Add Article">
       </form>
     {% endif %}
+
+    <h5>Tags</h5>
+      <button type="button" class="filter" data-tagname="All Articles">All Articles</button></a>
+    {% for tags in user_object.tags %}
+      <button type="button" class="filter" data-tagname="{{ tags.tag_value }}">{{ tags.tag_value }}</button></a>
+    {% endfor %}
+
+    <span id="display-articles">
     <br>
     {% for article in user_object.articles %}
       <ul>
@@ -33,5 +42,29 @@
         </li>
       </ul>
     {% endfor %}
+    </span>
 
+<script type="text/javascript">
+
+filters = $(".filter");
+console.log(filters);
+
+function getFilteredArticles(tagvalue) {
+    $.get('/filter-articles/' + tagvalue, displayArticles);}
+
+filters.on('click', function(evt) {
+var tagvalue = $(this).data("tagname");
+console.log(tagvalue);
+getFilteredArticles(tagvalue);
+});
+
+function displayArticles(articles_object) {
+console.log(articles_object);
+}
+// filteredArticles = $(#display-articles).val()
+// filteredArticles.empty()
+// filteredArticles = 
+  
+  </script>
   {% endblock %}
+

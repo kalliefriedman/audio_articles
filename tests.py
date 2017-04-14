@@ -19,23 +19,23 @@ class TestLoggedOut(unittest.TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_homepage(self):
+    def testHomepage(self):
         result = self.client.get('/')
         self.assertEqual(result.status_code, 200)
 
-    def test_register(self):
+    def testRegister(self):
         result = self.client.get('/register')
         self.assertEqual(result.status_code, 200)
 
-    def test_login(self):
+    def testLogin(self):
         result = self.client.get('/login')
         self.assertEqual(result.status_code, 200)
 
-    def test_create_article(self):
+    def testCreateArticle(self):
         result = self.client.get('/create-article')
         self.assertEqual(result.status_code, 302)
 
-    def test_user_articles(self):
+    def testUserArticles(self):
         example_data_users()
         example_data_articles()
         example_data_tags()
@@ -43,7 +43,7 @@ class TestLoggedOut(unittest.TestCase):
         result = self.client.get('/user-articles/1')
         self.assertEqual(result.status_code, 302)
 
-    def test_article_closeup(self):
+    def testArticleCloseup(self):
         example_data_users()
         example_data_articles()
         example_data_tags()
@@ -51,7 +51,7 @@ class TestLoggedOut(unittest.TestCase):
         result = self.client.get('/article-closeup/1')
         self.assertEqual(result.status_code, 302)
 
-    def test_article_edit(self):
+    def testArticleEdit(self):
         example_data_users()
         example_data_articles()
         example_data_tags()
@@ -59,7 +59,7 @@ class TestLoggedOut(unittest.TestCase):
         result = self.client.get('/article-edit/1')
         self.assertEqual(result.status_code, 302)
 
-    def test_read(self):
+    def testRead(self):
         result = self.client.get('/read', data={'text': "Hi this is a test",
                                                 'voice_id': "Amy",
                                                 'article_id': "1"})
@@ -88,41 +88,41 @@ class TestLoggedIn(unittest.TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_homepage(self):
+    def testHomepage(self):
         result = self.client.get('/')
         self.assertEqual(result.status_code, 302)
 
-    def test_register(self):
+    def testRegister(self):
         result = self.client.get('/register')
         self.assertEqual(result.status_code, 302)
 
-    def test_login(self):
+    def testLogin(self):
         result = self.client.get('/login')
         self.assertEqual(result.status_code, 302)
 
-    def test_create_article(self):
+    def testCreateArticle(self):
         result = self.client.get('/create-article', query_string={'user_id_from_form': "1"})
         self.assertEqual(result.status_code, 200)
 
-    def test_user_articles(self):
+    def testUserArticles(self):
         result = self.client.get('/user-articles/1')
         self.assertEqual(result.status_code, 200)
 
-    def test_article_closeup(self):
+    def testArticleCloseup(self):
         result = self.client.get('/article-closeup/1')
         self.assertEqual(result.status_code, 200)
 
-    def test_article_edit(self):
+    def testArticleEdit(self):
         result = self.client.get('/article-edit/1')
         self.assertEqual(result.status_code, 200)
 
-    def test_read(self):
+    def testRead(self):
         result = self.client.get('/read', query_string={'text': "Hi this is a test",
                                                         'voice': "Amy",
                                                         'article_id': "1"})
         self.assertEqual(result.status_code, 200)
 
-    def test_register_process(self):
+    def testRegisterProcess(self):
         result = self.client.post('/register-process',
                                   data={'username': "kallies",
                                         'f_name': "kallie",
@@ -133,7 +133,7 @@ class TestLoggedIn(unittest.TestCase):
                                   )
         self.assertEqual(result.status_code, 302)
 
-    def test_article_add_process(self):
+    def testArticleAddProcess(self):
         result = self.client.post('/article-add-process',
                                   data={'article_title': "sample title",
                                         "user_id": '1',
@@ -141,41 +141,54 @@ class TestLoggedIn(unittest.TestCase):
                                   )
         self.assertEqual(result.status_code, 302)
 
-    def test_login_process(self):
+    def testLoginProcess(self):
         result = self.client.post('/login-process',
                                   data={"username_or_email": 'kallies@yahoo.com', "password": "password"},
                                   )
         self.assertEqual(result.status_code, 302)
 
 
-# class AudioArticlesTestsDatabase(unittest.TestCase):
-#     """Flask tests that use the database."""
+class TestDatabase(unittest.TestCase):
+    """Flask tests that use the database."""
 
-#     def setUp(self):
-#         """What needs to be done prior to each test."""
+    def setUp(self):
+        """What needs to be done prior to each test."""
 
-#         self.client = app.test_client()
-#         app.config['TESTING'] = True
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+        connect_to_db(app, "postgresql:///testdb")
+        example_data_users()
+        example_data_articles()
+        example_data_tags()
+        example_data_taggings()
 
-#         # Connect to test database (uncomment when testing database)
-#         connect_to_db(app, "postgresql:///testdb")
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[''] = True
+        db.create_all()
 
-#         with self.client as c:
-#             with c.session_transaction() as sess:
-#                 sess[''] = True
-#         db.create_all()
+    def tearDown(self):
+        """Do at end of every test."""
+        db.session.close()
+        db.drop_all()
 
-#     def tearDown(self):
-#         """Do at end of every test."""
+    # def testUsersData(self):
+    #     """Testing user data format is correct"""
 
-#         # (uncomment when testing database)
-#         db.session.close()
-#         db.drop_all()
+    # def testArticlesData(self):
+    #     """Testing article data format is correct"""
 
-#     def test_backrefs(self):
-#         # Test that backrefs work from example_data()
-#         result = self.client.get("/games", data={'session["RSVP"]': True})
-#         self.assertIn("Clue", result.data)
+    # def testTagsData(self):
+    #     """Testing tags data format is correct"""
+
+    # def testTaggingsData(self):
+    #     """Testing taggings data format is correct"""
+
+    # def testBackrefs(self):
+    #     """Test that backrefs work correctly as expected"""
+
+    #     result = self.client.get("/games", data={'session["RSVP"]': True})
+    #     self.assertIn("Clue", result.data)
 
 
 if __name__ == "__main__":

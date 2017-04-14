@@ -86,7 +86,7 @@ class Tag(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Tag tag_id=%s tag_value=%s>" % (self.tag_id, self.tag_value)
+        return "%s" % (self.tag_value)
 
 
 class Tagging(db.Model):

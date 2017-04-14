@@ -202,6 +202,32 @@ def article_add_process():
         return redirect("/login")
 
 
+@app.route("/tag-add-process.json", methods=["POST"])
+def tag_add_process():
+    """Takes in two inputs via POST request and adds article to database."""
+#make sure only the logged in user can add new article
+    tag_value = request.form.get("tag_value")
+    article_id = request.form.get("article_id")
+    user_id_value = session.get("user_id")
+# in future could verify article by same title doesn't exist
+    if user_id_value:
+            tag_object = Tag.query.filter_by(tag_value=tag_value).first()
+            if tag_object:
+                tag_id = tag_object.tag_id
+            else:
+                new_tag = Tag(tag_value=tag_value)
+                db.session.add(new_tag)
+                db.session.commit()
+                tag_id = new_tag.tag_id
+
+            new_tagging = Tagging(article_id=article_id, tag_id=tag_id)
+            db.session.add(new_tagging)
+            db.session.commit()
+            return tag_value
+    else:
+        return redirect("/login")
+
+
 @app.route("/article-closeup/<article_id>")
 def article_closeup(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
@@ -234,6 +260,27 @@ def article_edit(article_id):
             return render_template("article_edit.html", article_object=article_object)
     else:
         return redirect("/login")
+
+
+@app.route("/filter-articles/<tag_value>")
+def filter_(tag_value):
+    """Takes in a tag value via URL and returns user articles with that tag value"""
+    print tag_value
+    print "running route"
+    user_id_value = session.get("user_id")
+    # if tag_value == "All Articles":
+    #     articles_for_tag = Article.query.filter_by(user_id=user_id_value).all()
+    # else:
+    #     tag_object = Tag.query.filter_by(tag_value=tag_value).first()
+    #     print tag_object
+    #     articles_for_tag = tag_object.articles
+    #     print articles_for_tag
+
+    article_objects = Article.query.filter(Article.tags.any(Tag.tag_value == tag_value), Article.user_id == user_id_value).all()
+    # (Tag.articles.any(Article.user_id == user_id_value)
+    print article_objects
+
+    return "hi"
 
 
 @app.route("/read", methods=["GET"])
