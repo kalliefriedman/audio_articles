@@ -88,6 +88,9 @@ class Tag(db.Model):
 
         return "%s" % (self.tag_value)
 
+    def articles_with_tag(self, user_id):
+        return db.session.query(Article).join(Tagging).filter(Tagging.tag_id == self.tag_id, Article.user_id == user_id).all()
+
 
 class Tagging(db.Model):
     """Taggings in Audio Articles app."""

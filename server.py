@@ -268,19 +268,20 @@ def filter_(tag_value):
     print tag_value
     print "running route"
     user_id_value = session.get("user_id")
-    # if tag_value == "All Articles":
-    #     articles_for_tag = Article.query.filter_by(user_id=user_id_value).all()
-    # else:
-    #     tag_object = Tag.query.filter_by(tag_value=tag_value).first()
-    #     print tag_object
-    #     articles_for_tag = tag_object.articles
-    #     print articles_for_tag
+    if tag_value == "All Articles":
+        user_tagged_articles = Article.query.filter_by(user_id=user_id_value).all()
+    else:
+        tag_object = Tag.query.filter_by(tag_value=tag_value).first()
+        user_tagged_articles = tag_object.articles_with_tag(user_id_value)
+        # articles_for_tag = tag_object.articles
+        # article_objects = articles_for_tag.filter_by(user_id=user_id_value).all()
 
-    article_objects = Article.query.filter(Article.tags.any(Tag.tag_value == tag_value), Article.user_id == user_id_value).all()
-    # (Tag.articles.any(Article.user_id == user_id_value)
-    print article_objects
+    # article_objects = Article.query.filter(Article.tags.any(Tagging.tag_value == tag_label), Article.user_id == user_id_value).all()
+    # db.session.query(Article).join(Tagging).filter(Tagging)
 
-    return "hi"
+    # print user_tagged_articles
+
+    return user_tagged_articles
 
 
 @app.route("/read", methods=["GET"])
