@@ -4,7 +4,7 @@
     User Articles 
   {% endblock %}
 
-  {% block content %}
+{% block content %}
   
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -15,7 +15,7 @@
     </ul>
     {% endif %}
   {% endwith %}
-  
+
     <br><br>
       <h1>Welcome, {{ user_object.f_name }}!</h1>
     <br>
@@ -44,27 +44,29 @@
     {% endfor %}
     </span>
 
+
 <script type="text/javascript">
 
 filters = $(".filter");
-console.log(filters);
 
 function getFilteredArticles(tagvalue) {
     $.get('/filter-articles/' + tagvalue, displayArticles);}
 
 filters.on('click', function(evt) {
 var tagvalue = $(this).data("tagname");
-console.log(tagvalue);
 getFilteredArticles(tagvalue);
 });
 
 function displayArticles(articles_object) {
-console.log(articles_object);
+  $("#display-articles").empty();
+  $("#display-articles").append("<br>");
+  console.log("emptied")
+  for (var key in articles_object) {
+    let value = articles_object[key];
+    $("#display-articles").append("<ul><li><a href=/article-closeup/"+key+">"+value+"</a></li></ul>");
+  }
 }
-// filteredArticles = $(#display-articles).val()
-// filteredArticles.empty()
-// filteredArticles = 
-  
   </script>
+
   {% endblock %}
 
