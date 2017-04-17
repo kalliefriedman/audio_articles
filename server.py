@@ -232,7 +232,7 @@ def tag_add_process():
 def article_closeup(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
     user_id_value = session.get("user_id")
-    article_object = Article.query.filter_by(article_id=article_id).one()
+    article_object = Article.query.filter_by(article_id=article_id).first()
     if user_id_value:
         if article_object.user_id == int(user_id_value):
             boto_session = BotoSession(profile_name="adminuser")
@@ -254,7 +254,7 @@ def article_closeup(article_id):
 def article_edit(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
     user_id_value = session.get("user_id")
-    article_object = Article.query.filter_by(article_id=article_id).one()
+    article_object = Article.query.filter_by(article_id=article_id).first()
     if user_id_value:
         if int(user_id_value) == article_object.user_id:
             return render_template("article_edit.html", article_object=article_object)
@@ -263,7 +263,7 @@ def article_edit(article_id):
 
 
 @app.route("/filter-articles/<tag_value>")
-def filter_(tag_value):
+def filter_articles(tag_value):
     """Takes in a tag value via URL and returns user articles with that tag value"""
     print tag_value
     print "running route"
@@ -275,8 +275,6 @@ def filter_(tag_value):
         print user_tagged_articles
         for article in user_tagged_articles:
             user_tagged_articles_values[article.article_id] = article.article_title
-        for key in user_tagged_articles_values.iteritems():
-            print key
     else:
         tag_object = Tag.query.filter_by(tag_value=tag_value).first()
         user_tagged_articles = tag_object.articles_with_tag(user_id_value)
@@ -288,6 +286,31 @@ def filter_(tag_value):
     # article_objects = Article.query.filter(Article.tags.any(Tagging.tag_value == tag_label), Article.user_id == user_id_value).all()
     # db.session.query(Article).join(Tagging).filter(Tagging)
     return jsonify(user_tagged_articles_values)
+
+
+@app.route("/delete-article/<article_id>")
+def delete_article(article_id):
+    """Takes in an article id via URL and deletes article with that article id"""
+    user_id = session.get("user_id")
+    article_object = Article.query.filter_by(article_id=article_id).first()
+    print article_object
+    db.session.delete(article_object)
+    db.session.commit()
+    return redirect("/user-articles/" + str(user_id))
+
+
+@app.route("/delete-tag", methods=['POST'])
+def delete_tag():
+    """Takes in form values via post request in URL URL and deletes tag from database"""
+    tag_id = request.form.get("tag_id")
+    article_id = request.form.get("article_id")
+    tagging_object = Tagging.query.filter(Tagging.tag_id == tag_id, Tagging.article_id == article_id).first()
+    db.session.delete(tagging_object)
+    db.session.commit()
+    tag_dictionary = {"tag_id": tag_id}
+    print tag_dictionary["tag_id"]
+    print "finished commit"
+    return jsonify(tag_dictionary)
 
 
 @app.route("/read", methods=["GET"])

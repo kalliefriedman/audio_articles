@@ -27,15 +27,27 @@
     <input type="submit" value="Edit article" />
   </form>
 
+  <form action="/delete-article/{{ article_object.article_id }}" method=["POST"]>
+    <input type="submit" value="Delete article" />
+  </form>
+
   <br><br>
     <h1>{{ article_object.article_title }}</h1>
   <br>
 
 <h4>Tags: 
-  <span id="tags">{% for tag in article_object.tags %}
-  {{ tag }} * 
-  {% endfor %}</span>
+  <div id="tags">
+  {% for tag in article_object.tags %}
+  <form id="tag-id-{{ tag.tag_id }}" class="delete-tag">
+    <input type="hidden" name="article_id" value="{{ article_object.article_id }}">
+    <input type="hidden" name="tag_id" value="{{ tag.tag_id }}">
+    <input type="submit" name="tag_value" value="{{ tag.tag_value }}">
+  </form>
+  {% endfor %}
+</div>
 </h4>
+
+
 <button id="add-tags">Add Tag</button><br><br>
 
     <div id="add-tag-modal" class="modal fade" tabindex="-1" role="dialog">
@@ -49,7 +61,7 @@
             <form id="add-tag-form">
           Tag Name: <input id="tag-field" type="text" name="tag-name">
                     <input type="hidden" name="article_id" id="article-id" value="{{ article_object.article_id }}">
-        </form>
+        </form method="POST">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
