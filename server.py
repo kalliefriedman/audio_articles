@@ -223,7 +223,8 @@ def tag_add_process():
             new_tagging = Tagging(article_id=article_id, tag_id=tag_id)
             db.session.add(new_tagging)
             db.session.commit()
-            return tag_value
+            new_tag_attributes = {"tag_value": tag_value, "tag_id": tag_id, "article_id": article_id}
+            return jsonify(new_tag_attributes)
     else:
         return redirect("/login")
 
