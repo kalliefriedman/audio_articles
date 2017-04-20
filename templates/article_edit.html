@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Edit Article {% endblock %}
+
+{% block content %}
+
+
+<form action="/article-add-process" method="POST">
+Title:    <input type="text" name="article_title" value="{{ article_object.article_title }}"> <br>
+Description (Optional): <input type="text" name="article_description" value="{{ article_object.article_description }}"> <br>
+Text: <textarea name="article_text" rows='30' cols='80'>{{ article_object.article_text }}</textarea><br>
+URL Source (Optional): <input type="text" name="url_source" value={{ article_object.url_source }}> <br>
+<input type="submit" value="Save">
+</form>
+
+
+{% endblock %}
