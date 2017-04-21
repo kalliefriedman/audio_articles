@@ -4,9 +4,12 @@
     User Articles 
   {% endblock %}
 
-  {% block page_specific_js %} 
-    <script src="/static/user_articles.js"></script>        
-  {% endblock %}
+{% block page_specific_js %} 
+<script src="http://unpkg.com/react/dist/react.js"></script>
+<script src="http://unpkg.com/react-dom/dist/react-dom.js"></script>
+<script src="http://unpkg.com/babel-standalone"></script>
+<script src="/static/user_articles.js"></script>  
+{% endblock %}
 
 {% block content %}
   
@@ -47,11 +50,6 @@
       </ul>
     {% endfor %}
     </span>
-
-
-<script type="text/javascript">
-
-  </script>
 
   {% endblock %}
 

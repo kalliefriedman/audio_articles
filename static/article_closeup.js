@@ -11,8 +11,8 @@ $(document).ready(function(){
     $("#audio_controls").hide();
 
     // prevents default and makes call to read route, constructing URL, on click
-    $("#submit_read_request").click(function(event){
-        event.preventDefault();
+    $("#submit_read_request").click(function(evt){
+        evt.preventDefault();
         var voiceId = $("#voice-id").val();
         var articleText = $("#text").val();
         var articleId = $("#article-id").val();

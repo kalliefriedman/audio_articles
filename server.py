@@ -354,6 +354,11 @@ def read_text():
     # return Response(stream_template('user_articles.html', mimetype='audio/mpeg'))
 
 
+@app.route("/user-profile")
+def user_articles_react():
+    return render_template("user_profile_react.html")
+
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
