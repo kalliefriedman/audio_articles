@@ -147,6 +147,24 @@ class TestLoggedIn(unittest.TestCase):
                                   )
         self.assertEqual(result.status_code, 302)
 
+    def tagAddProcess(self):
+        result = self.client.post('/tag-add-process.json', data={"tag_value": "sample tag", "article_id": "1", "user_id_value": "1"})
+        self.assertEqual(result.status_code, 200)
+
+    def filterArticlesByTag(self):
+        result = self.client.get('/filter-articles/<tag_value',
+                                 data={"tag_value": "Recent"})
+        self.assertEqual(result.status_code, 200)
+
+    def deleteArticle(self):
+        result = self.client.post('/delete-article/<article_id',
+                                  data={"article_id": '3'})
+        self.assertEqual(result.status_code, 302)
+
+    def deleteTag(self):
+        result = self.client.post('/delete-tag', data={})
+        self.assertEqual(result.status_code, 200)
+
 
 class TestDatabase(unittest.TestCase):
     """Flask tests that use the database."""
@@ -171,6 +189,7 @@ class TestDatabase(unittest.TestCase):
         """Do at end of every test."""
         db.session.close()
         db.drop_all()
+
 
     # def testUsersData(self):
     #     """Testing user data format is correct"""

@@ -332,7 +332,7 @@ def read_text():
 
             audio_stream = response.get("AudioStream")
 
-            article_object = Article.query.filter_by(article_id=article_id).one()
+            article_object = Article.query.filter_by(article_id=article_id).first()
             if "user_id" in session:
                 session_user_id = session["user_id"]
                 if article_object.user_id == session_user_id:
@@ -357,6 +357,20 @@ def read_text():
 @app.route("/user-profile")
 def user_articles_react():
     return render_template("user_profile_react.html")
+
+
+@app.route("/user_info_profile.json", methods=["GET"])
+def return_profile_info():
+    user_id_value = session.get("user_id")
+    user_object = User.query.filter_by(user_id=user_id_value).first()
+    user_info = {"user_id": user_object.user_id,
+                 "username": user_object.username,
+                 "f_name": user_object.f_name,
+                 "l_name": user_object.l_name,
+                 "password": user_object.password,
+                 "email": user_object.email,
+                 "phone": user_object.phone}
+    return jsonify(user_info)
 
 
 if __name__ == "__main__":
