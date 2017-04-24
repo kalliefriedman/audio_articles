@@ -147,22 +147,20 @@ class TestLoggedIn(unittest.TestCase):
                                   )
         self.assertEqual(result.status_code, 302)
 
-    def tagAddProcess(self):
+    def testTagAddProcess(self):
         result = self.client.post('/tag-add-process.json', data={"tag_value": "sample tag", "article_id": "1", "user_id_value": "1"})
         self.assertEqual(result.status_code, 200)
 
-    def filterArticlesByTag(self):
-        result = self.client.get('/filter-articles/<tag_value',
-                                 data={"tag_value": "Recent"})
+    def testFilterArticlesByTag(self):
+        result = self.client.get('/filter-articles/Recent')
         self.assertEqual(result.status_code, 200)
 
-    def deleteArticle(self):
-        result = self.client.post('/delete-article/<article_id',
-                                  data={"article_id": '3'})
+    def testDeleteArticle(self):
+        result = self.client.post('/delete-article/3')
         self.assertEqual(result.status_code, 302)
 
-    def deleteTag(self):
-        result = self.client.post('/delete-tag', data={})
+    def testDeleteTag(self):
+        result = self.client.post('/delete-tag', data={"tag_id": "1", "article_id": "1"})
         self.assertEqual(result.status_code, 200)
 
 

@@ -9,33 +9,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Article, Tag, Tagging, connect_to_db, db
 
-from collections import namedtuple
 from boto3 import Session as BotoSession
 from datetime import datetime
-
-
-#static variables for amazon Polly API
-ResponseStatus = namedtuple("HTTPStatus",
-                            ["code", "message"])
-
-ResponseData = namedtuple("ResponseData",
-                          ["status", "content_type", "data_stream"])
-
-# Mapping the output format used in the client to the content type for the
-# response
-AUDIO_FORMATS = {"ogg_vorbis": "audio/ogg",
-                 "mp3": "audio/mpeg",
-                 "pcm": "audio/wave; codecs=1"}
-CHUNK_SIZE = 1024
-HTTP_STATUS = {"OK": ResponseStatus(code=200, message="OK"),
-               "BAD_REQUEST": ResponseStatus(code=400, message="Bad request"),
-               "NOT_FOUND": ResponseStatus(code=404, message="Not found"),
-               "INTERNAL_SERVER_ERROR": ResponseStatus(code=500, message="Internal server error")}
-PROTOCOL = "http"
-ROUTE_INDEX = "/index.html"
-ROUTE_VOICES = "/voices"
-ROUTE_READ = "/read"
-
 
 #creating flask app
 app = Flask(__name__)
@@ -278,6 +253,7 @@ def filter_articles(tag_value):
             user_tagged_articles_values[article.article_id] = article.article_title
     else:
         tag_object = Tag.query.filter_by(tag_value=tag_value).first()
+        print tag_object
         user_tagged_articles = tag_object.articles_with_tag(user_id_value)
         print user_tagged_articles[0]
         # articles_for_tag = tag_object.articles
@@ -289,12 +265,17 @@ def filter_articles(tag_value):
     return jsonify(user_tagged_articles_values)
 
 
-@app.route("/delete-article/<article_id>")
+@app.route("/delete-article/<article_id>", methods=['POST'])
 def delete_article(article_id):
     """Takes in an article id via URL and deletes article with that article id"""
     user_id = session.get("user_id")
     article_object = Article.query.filter_by(article_id=article_id).first()
-    print article_object
+    taggings_objects = Tagging.query.filter_by(article_id=article_id).all()
+
+    for tagging in taggings_objects:
+        db.session.delete(tagging)
+        db.session.commit()
+
     db.session.delete(article_object)
     db.session.commit()
     return redirect("/user-articles/" + str(user_id))
@@ -356,12 +337,16 @@ def read_text():
 
 @app.route("/user-profile")
 def user_articles_react():
-    return render_template("user_profile_react.html")
+    user_id_value = session.get("user_id")
+    return render_template("user_profile_react.html", user_id=user_id_value) 
 
 
 @app.route("/user_info_profile.json", methods=["GET"])
 def return_profile_info():
-    user_id_value = session.get("user_id")
+    user_id_value = request.args.get('user_id')
+    # user_id_value = session.get("user_id")
+    print session
+    print user_id_value
     user_object = User.query.filter_by(user_id=user_id_value).first()
     user_info = {"user_id": user_object.user_id,
                  "username": user_object.username,
