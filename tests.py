@@ -163,6 +163,10 @@ class TestLoggedIn(unittest.TestCase):
         result = self.client.post('/delete-tag', data={"tag_id": "1", "article_id": "1"})
         self.assertEqual(result.status_code, 200)
 
+    def testUserProfile(self):
+        result = self.client.get('/user-profile')
+        self.assertEqual(result.status_code, 200)
+
 
 class TestDatabase(unittest.TestCase):
     """Flask tests that use the database."""
