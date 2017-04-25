@@ -23,92 +23,82 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Brand</a>
+      <a class="navbar-brand" href="#">Audio Articles</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Link</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">One more separated link</a></li>
-          </ul>
+        
+        <ul style="list-style-type:none">
+
+        {% if session.get("user_id")|string() == user_object.user_id|string() %}
+          <li>
+          <form class="navbar-form navbar-left" action="/create-article">
+            <input type="hidden" name="user_id_from_form" value="{{ user_object.user_id }}">
+          <button type="submit" class="btn btn-default">Add Article</button>
+          </form>
+          </li>
+        {% endif %}
+      
+      <ul class="nav navbar-nav navbar-right" style="list-style-type:none">
+        <li>
+          <a href="/user-profile">View profile</a>
         </li>
-      </ul>
-      <form class="navbar-form navbar-left">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-      </form>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Link</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
+    {% if session.get("user_id") %}
+        <li>
+        <form class="navbar-form navbar-right" action="/logout" method="POST">
+        <button type="submit" class="btn btn-default">Logout</button>
+        </form>
         </li>
-      </ul>
+    {% endif %}
+    </ul>
+          </ul>
+
+
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
-  
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-  {% endwith %}
 
-    <br><br>
-      <h1>Welcome, {{ user_object.f_name }}!</h1>
-    <br>
-    {% if session.get("user_id")|string() == user_object.user_id|string() %}
-      <form action="/create-article">
-        <input type="hidden" name="user_id_from_form" value="{{ user_object.user_id }}">
-        <input type="submit" name="submit" value="Add Article">
-      </form>
-    {% endif %}
+<div class="container-fluid">  
+  <div class="row">
 
-    <form action="/user-profile">
-      <input type="submit" value="View Profile" />
-    </form>
+    <div class="col-xs-3 tags-column">
+      <h3>Tags</h3>
+        <button type="button" class="filter" data-tagname="All Articles">All Articles</button></a><br>
+      {% for tags in user_object.tags %}
+          <button type="button" class="filter" data-tagname="{{ tags.tag_value }}">{{ tags.tag_value }}</button></a><br>
+      {% endfor %}
+    </div>
 
-    <h5>Tags</h5>
-      <button type="button" class="filter" data-tagname="All Articles">All Articles</button></a>
-    {% for tags in user_object.tags %}
-      <button type="button" class="filter" data-tagname="{{ tags.tag_value }}">{{ tags.tag_value }}</button></a>
-    {% endfor %}
+    <div class="col-xs-9 article-column">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+      {% endwith %}
 
-    <span id="display-articles">
-    <br>
-    {% for article in user_object.articles %}
-      <ul>
-        <li>
-          <a href="/article-closeup/{{ article.article_id }}">
-          {{ article.article_title }}</a>
-        </li>
-      </ul>
-    {% endfor %}
-    </span>
+        <h1>Welcome, {{ user_object.f_name }}!</h1>
+      <span id="display-articles">
+      <br>
+      {% for article in user_object.articles %}
+        <ul>
+          <li>
+            <a href="/article-closeup/{{ article.article_id }}">
+            {{ article.article_title }}</a>
+          </li>
+        </ul>
+      {% endfor %}
+      </span>
 
+    </div>
+
+      
+  </div>
+</div>
   {% endblock %}
 

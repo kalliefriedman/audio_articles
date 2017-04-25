@@ -1,3 +1,60 @@
 .navbar {
     background-color: #711731;
 }
+
+.navbar-form {
+vertical-align: top;
+background-color: #711731;
+font-family: "Courier New", Courier;
+}
+
+.btn-default {
+    background-color: #711731;
+    border: none;
+    color: #DECAB1;
+    font-family: "Courier New", Courier;
+}
+
+.navbar-default .navbar-brand {
+    font-family: "Arvo", Courier, serif;
+    color: #99A7AB;
+}
+
+
+.navbar-default .navbar-nav>li>a {
+    color: #DECAB1;
+    font-family: "Courier New", Courier;
+
+}
+
+.tags-column {
+    color: #492533;
+    font-family: "Courier New", Courier;
+}
+
+.article-column {
+    color: #492533;
+    font-family: "Courier New", Courier;
+}
+
+.button {
+    color: #DECAB1;
+    background-color: #711731;
+    border: none;
+}
+
+#add-tag-modal {
+    color: #492533;
+    font-family: "Courier New", Courier;
+}
+
+.filter {
+    color: #DECAB1;
+    background-color: #711731;
+    border: none;
+}
+
+/*#492533
+#DECAB1
+#4A3533
+#99A7AB*/
