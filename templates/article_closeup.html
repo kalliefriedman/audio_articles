@@ -67,7 +67,7 @@
 
 
 
-<div class="container-fluid">
+<div class="container-fluid image-container">
   <div class="row">
 
     <div class="col-xs-3 tags-column">
@@ -79,14 +79,14 @@
           <form id="tag-id-{{ tag.tag_id }}" class="delete-tag">
             <input type="hidden" name="article_id" value="{{ article_object.article_id }}">
             <input type="hidden" name="tag_id" value="{{ tag.tag_id }}">
-            <input type="submit" name="tag_value" value="{{ tag.tag_value }}">
+            <input type="submit" class="filter" name="tag_value" value="{{ tag.tag_value }} x">
           </form>
           {% endfor %}
         </div>
       </h4>
     </div>
     
-    <div class="col-xs-9 article-column">
+    <div class="col-xs-8 article-column">
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <ul class=flashes>
@@ -104,7 +104,7 @@
               <select name="voice" id="voice-id">
                 {% for voice in all_voices %}
                   {% if 'en' in voice["LanguageCode"] %}
-                    <option value="{{ voice['Name'] }}">{{ voice["Name"] }}</option>
+                    <option class="voice-option" value="{{ voice['Name'] }}">{{ voice["Name"] }}</option>
                   {% endif %}
                 {% endfor %}
               </select>

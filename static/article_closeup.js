@@ -9,6 +9,7 @@ $(document).ready(function(){
 
 
     $("#audio_controls").hide();
+    $("#logout-button").hide();
 
     // prevents default and makes call to read route, constructing URL, on click
     $("#submit_read_request").click(function(evt){

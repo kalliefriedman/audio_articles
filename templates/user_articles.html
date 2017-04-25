@@ -60,7 +60,7 @@
 </nav>
 
 
-<div class="container-fluid">  
+<div class="container-fluid image-container">  
   <div class="row">
 
     <div class="col-xs-3 tags-column">
@@ -71,7 +71,7 @@
       {% endfor %}
     </div>
 
-    <div class="col-xs-9 article-column">
+    <div class="col-xs-8 article-column">
       {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class=flashes>

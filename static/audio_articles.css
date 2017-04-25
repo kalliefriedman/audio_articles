@@ -1,11 +1,21 @@
 .navbar {
     background-color: #711731;
+    border: none;
+}
+
+body {
+    background: url(/static/headphones.jpg) no-repeat center center;
+    background-size: cover;
+}
+
+html {
+   height: 100%; 
 }
 
 .navbar-form {
-vertical-align: top;
-background-color: #711731;
-font-family: "Courier New", Courier;
+    vertical-align: top;
+    background-color: #711731;
+    font-family: "Courier New", Courier;
 }
 
 .btn-default {
@@ -13,11 +23,21 @@ font-family: "Courier New", Courier;
     border: none;
     color: #DECAB1;
     font-family: "Courier New", Courier;
+    font-size: 1.25em;
+}
+
+.btn-default:hover {
+    background-color: #711731;
+    border: none;
+    color: #DECAB1;
+    font-family: "Courier New", Courier;
+    font-size: 1.25em;
 }
 
 .navbar-default .navbar-brand {
-    font-family: "Arvo", Courier, serif;
+    font-family: 'Inknut Antiqua', serif;
     color: #99A7AB;
+    font-size: 2em;
 }
 
 
@@ -30,17 +50,23 @@ font-family: "Courier New", Courier;
 .tags-column {
     color: #492533;
     font-family: "Courier New", Courier;
+    font-size: 1.25em;
 }
 
 .article-column {
     color: #492533;
     font-family: "Courier New", Courier;
+    background: rgba(255,255,255,.7);
+    border-radius: 12px;
+    padding-bottom: 194px;
+    font-size: 1.25em;
 }
 
 .button {
     color: #DECAB1;
     background-color: #711731;
     border: none;
+    font-size: 1.25em;
 }
 
 #add-tag-modal {
@@ -51,8 +77,29 @@ font-family: "Courier New", Courier;
 .filter {
     color: #DECAB1;
     background-color: #711731;
+    margin: 2px;
     border: none;
+    font-size: 1.25em;
 }
+
+a {
+    color: #492533;
+    font-size: 1.25em;
+}
+
+a:hover {
+    color: #492533;
+}
+
+option {
+    font-family: "Courier New", Courier;
+
+}
+
+h4 {
+    font-size: 1.25em;
+}
+
 
 /*#492533
 #DECAB1

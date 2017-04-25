@@ -2,6 +2,8 @@
 
 $(document).ready(function(){
 var filters = $(".filter");
+$("#logout-button").hide();
+
 
 function getFilteredArticles(tagvalue) {
     $.get('/filter-articles/' + tagvalue, displayArticles);}
