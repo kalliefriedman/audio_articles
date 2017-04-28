@@ -87,13 +87,12 @@ a {
     font-size: 1.25em;
 }
 
-a:hover {
-    color: #492533;
-}
-
-option {
+#nav-link:hover {
+    background-color: #711731;
+    border: none;
+    color: #DECAB1 !important;
     font-family: "Courier New", Courier;
-
+    font-size: 1.25em;
 }
 
 h4 {

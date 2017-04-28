@@ -6,7 +6,7 @@ Users can then view their articles by different tags, last listened or date save
 for any article, users can select from a host of possible voices and accents, and have their article text read 
 aloud to them in that voice.
 
-![alt text](static/headphones.jpg "Description goes here")
+![alt text](static/article_closeup_screencast.png "Article Closeup Page")
 
 # Technologies
 Backend: Python, Flask, PostgreSQL, SQLAlchemy

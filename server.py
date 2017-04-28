@@ -157,11 +157,12 @@ def article_add_process():
     article_description = request.form.get("article_description")
     article_text = request.form.get("article_text")
     url_source = request.form.get("url_source")
-    user_id_from_form = request.form.get("user_id")
+    # user_id_from_form = request.form.get("user_id")
     user_id_value = session.get("user_id")
 # in future could verify article by same title doesn't exist
     if user_id_value:
-        if int(user_id_value) == int(user_id_from_form):
+        # if int(user_id_value) == int(user_id_from_form):
+        if True:
             new_article = Article(article_title=article_title, user_id=user_id_value,
                                   article_description=article_description,
                                   article_text=article_text, url_source=url_source)
@@ -362,7 +363,7 @@ def return_profile_info():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
 
     connect_to_db(app)
