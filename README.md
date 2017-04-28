@@ -10,28 +10,30 @@ aloud to them in that voice.
 
 # Technologies
 Backend: Python, Flask, PostgreSQL, SQLAlchemy
+
 Frontend: JavaScript, jQuery, AJAX, Jinja2, Bootstrap, HTML5, CSS3, some React
+
 APIs: Amazon Polly
 
 # Features
--User account creation
--Functionality to add/delete articles, and access later
--Article tagging/organization/filtering
--Playing audio of article text utilizing Amazon Polly API
+*User account creation
+*Functionality to add/delete articles, and access later
+*Article tagging/organization/filtering
+*Playing audio of article text utilizing Amazon Polly API
 
 # Installation
 To run Audio Articles:
--Install PostgreSQL (Mac OSX)
--Clone or fork this repo:
-https://github.com/KallieFriedman/audio_articles
--Create and activate a virtual environment inside your Audio Articles directory:
-virtualenv env
-source env/bin/activate
--Install the dependencies:
-pip install -r requirements.txt
--Sign up for Amazon Web Services and follow steps to install AWS in your Terminal
--Set up the database:
-python model.py
--Run the app:
-python server.py
-You can now navigate to 'localhost:5000/' to access Audio Articles
+*Install PostgreSQL (Mac OSX)
+*Clone or fork this repo:
+    *https://github.com/KallieFriedman/audio_articles
+*Create and activate a virtual environment inside your Audio Articles directory:
+    *virtualenv env
+    *source env/bin/activate
+*Install the dependencies:
+    *pip install -r requirements.txt
+*Sign up for Amazon Web Services and follow steps to install AWS in your Terminal
+*Set up the database:
+    *python model.py
+*Run the app:
+    *python server.py
+*You can now navigate to 'localhost:5000/' to access Audio Articles
