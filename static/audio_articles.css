@@ -34,6 +34,10 @@ html {
     font-size: 1.25em;
 }
 
+.product-description-column h1 {
+    text-align: center;
+}
+
 .navbar-default .navbar-brand {
     font-family: 'Inknut Antiqua', serif;
     color: #99A7AB;
@@ -54,6 +58,15 @@ html {
 }
 
 .article-column {
+    color: #492533;
+    font-family: "Courier New", Courier;
+    background: rgba(255,255,255,.7);
+    border-radius: 12px;
+    padding-bottom: 194px;
+    font-size: 1.25em;
+}
+
+.product-description-column {
     color: #492533;
     font-family: "Courier New", Courier;
     background: rgba(255,255,255,.7);

@@ -4,17 +4,41 @@
   Homepage 
 {% endblock %}
 
-{% block content %}
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-  {% endwith %}
+{% block page_specific_js %} 
+<script src="http://unpkg.com/react/dist/react.js"></script>
+<script src="http://unpkg.com/react-dom/dist/react-dom.js"></script>
+<script src="http://unpkg.com/babel-standalone"></script>
+{% endblock %}
 
-  <h1>Welcome to Audio Articles</h1>
-  <p>Register to save your articles, access them later and have them read aloud to you!</p>
+{% block content %}
+
+<div class="container-fluid image-container">  
+  <div class="row">
+
+    <div class="col-xs-8 col-xs-offset-2 product-description-column">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+      {% endwith %}
+
+    <h1>Welcome to Audio Articles</h1>      
+    <span id="audio_articles_summary">
+      <p>Register to save your articles, access them later and have them read aloud to you!</p>
+    </span>
+
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$("#login-button").hide();
+$("#register-button").hide();
+</script>
+
+
 {% endblock %}
