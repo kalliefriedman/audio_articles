@@ -112,6 +112,15 @@ h4 {
     font-size: 1.25em;
 }
 
+#login-button-homepage {
+    float: left;
+    margin-left: 300px;
+}
+
+#register-button-homepage {
+    float: right;
+    margin-right: 300px;
+}
 
 /*#492533
 #DECAB1

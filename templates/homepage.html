@@ -8,6 +8,7 @@
 <script src="http://unpkg.com/react/dist/react.js"></script>
 <script src="http://unpkg.com/react-dom/dist/react-dom.js"></script>
 <script src="http://unpkg.com/babel-standalone"></script>
+<script src="/static/homepage.js"></script>  
 {% endblock %}
 
 {% block content %}
@@ -25,20 +26,25 @@
         </ul>
         {% endif %}
       {% endwith %}
-
+<br><br>
     <h1>Welcome to Audio Articles</h1>      
     <span id="audio_articles_summary">
-      <p>Register to save your articles, access them later and have them read aloud to you!</p>
+      <p>
+      Register to save your articles, access them later and have them read aloud to you!
+      </p>
+      <br>
+      <br>
+      <form action="/login" method="GET">
+        <input id="login-button-homepage" class="button" type="submit" value="Login">
+      </form>
+
+      <form action="/register" method="GET">
+        <input id="register-button-homepage" class="button" type="submit" value="Register">
+      </form>
     </span>
 
     </div>
   </div>
 </div>
-
-<script type="text/javascript">
-$("#login-button").hide();
-$("#register-button").hide();
-</script>
-
 
 {% endblock %}

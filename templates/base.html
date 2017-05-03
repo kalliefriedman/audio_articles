@@ -29,12 +29,12 @@
         <input class="button" id="logout-button" type="submit" value="Logout">
       </form>
     {% else %}
-      <form id="login_button" action="/login" method="GET">
-        <input type="submit" value="Login">
+      <form action="/login" method="GET">
+        <input id="login-button" class="button" type="submit" value="Login">
       </form>
 
-      <form id="register_button" action="/register" method="GET">
-        <input type="submit" value="Register">
+      <form action="/register" method="GET">
+        <input id="register-button" class="button" type="submit" value="Register">
       </form>
     {% endif %}
 
