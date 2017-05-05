@@ -4,30 +4,46 @@
   {% endblock %}
 
   {% block content %}
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-  {% endwith %}
+
+
+<div class="container-fluid image-container">
+  <div class="row">
+
+    <div class="col-xs-8 col-xs-offset-2 article-column">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    {% endwith %}
 
     <h1>Login</h1>
 
     <form action="/login-process" method="POST">
-      Username or Email:    <input type="text" name="username_or_email"> <br>
-      Password: <input type="password" name="password"> <br><br>
-      <input type="submit" value="Login" class="button">
+      <table style="width:100%">
+        <tr>
+          <td>Username or Email:</td>
+          <td><input type="text" name="username_or_email"></td> 
+        </tr>
+        <tr>
+          <td>Password:</td>
+          <td><input type="password" name="password"></td> 
+        </tr>
+        <tr>
+          <td><input type="submit" value="Login" class="button"></td>
+        </tr>
+      </table>  
     </form>
 
+    </div>
+    </div>
+</div>
+
 <script type="text/javascript">
-$("#login_button").hide();
+$("#login-button").hide();
 </script>
 
   {% endblock %}
-
-<!--   <script type="text/javascript">
- TODO add code to hide logout button, registration button.
-  </script> -->

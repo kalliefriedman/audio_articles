@@ -6,30 +6,58 @@
   {% endblock %}
 
   {% block content %}
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-  {% endwith %}
+<div class="container-fluid image-container">
+  <div class="row">
+    <div class="col-xs-8 col-xs-offset-2 article-column">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    {% endwith %}
 
-
-  <h1>Register</h1>
+    <h1>Register</h1>
 
     <form action="/register-process" method="POST">
-      Username:  <input type="text" name="username"> <br>
-      First Name: <input type="text" name="f_name"> <br>
-      Last Name:  <input type="text" name="l_name"> <br>
-      Password:   <input type="password" name="password"> <br>
-      Email:      <input type="text" name="email"> <br>
-      Phone:      <input type="text" name="phone"> <br><br>
-      <input type="submit" class="button" value="Create Account">
+      <table style="width:100%">
+        <tr>
+          <td>Username:</td>
+          <td><input type="text" name="username"></td> 
+        </tr>
+        <tr>
+          <td>First Name:</td>
+          <td><input type="text" name="f_name"></td> 
+        </tr>
+        <tr>
+          <td>Last Name:</td>
+          <td><input type="text" name="l_name"></td> 
+        </tr>
+        <tr>
+          <td>Password:</td>
+          <td><input type="password" name="password"></td> 
+        </tr>
+        <tr>
+          <td>Email:</td>
+          <td><input type="text" name="email"></td> 
+        </tr>
+        <tr>
+          <td>Phone:</td>
+          <td><input type="text" name="phone"></td> 
+        </tr>
+        <tr>
+          <td><input type="submit" class="button" value="Create Account"></td>
+        </tr>
+      </table>  
     </form>
 
+    </div>
+    </div>
+</div>
+
   <script type="text/javascript">
-  $("#register_button").hide();
+  $("#register-button").hide();
   </script>
   {% endblock %}
