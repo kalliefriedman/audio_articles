@@ -54,19 +54,19 @@ def register_process():
     password = request.form.get("password")
     email = request.form.get("email")
     phone = request.form.get("phone")
+    password_salt = ""
 
     if user_id_value:
         return redirect("user-articles/" + str(user_id_value))
     else:
-        if (User.query.filter_by(email=email).all()) == []:
-            new_user = User(username=username, f_name=f_name, l_name=l_name, password=password, email=email,
-                            phone=phone, password_salt="")
+        user_object_by_email = User.get_user_object_by_email(email)
+        print user_object_by_email
+        if user_object_by_email is None:
+            User.create_new_user(username, f_name, l_name, password, email,
+                                 phone, password_salt)
 
-            db.session.add(new_user)
-            db.session.commit()
-
-            user_object = User.query.filter_by(email=email).first()
-            user_id = user_object.user_id
+            user_object_by_email = User.get_user_object_by_email(email)
+            user_id = user_object_by_email.user_id
             session["user_id"] = user_id
 
         else:
@@ -97,10 +97,9 @@ def login_process():
     if user_id_value:
         return redirect("user-articles/" + str(user_id_value))
     else:
-        if User.query.filter_by(email=username_or_email).all() != []:
-            user_object = User.query.filter_by(email=username_or_email).first()
-        else:
-            user_object = User.query.filter_by(username=username_or_email).first()
+        user_object = User.get_user_object_by_email(username_or_email)
+        if user_object is None:
+            user_object = User.get_user_object_by_username(username_or_email)
 
         # If user exists and password is correct, redirect to user_articles page
         if user_object and (user_object.password == password):
@@ -144,7 +143,7 @@ def display_user_articles(user_id):
     if user_id != user_id_value:
         return redirect("/login")
     else:
-        user_object = User.query.filter_by(user_id=user_id).one()
+        user_object = User.get_user_object_by_user_id(user_id)
         return render_template("user_articles.html", user_object=user_object)
 
 
@@ -162,45 +161,36 @@ def article_add_process():
 # in future could verify article by same title doesn't exist
     if user_id_value:
         # if int(user_id_value) == int(user_id_from_form):
-        if True:
-            new_article = Article(article_title=article_title, user_id=user_id_value,
-                                  article_description=article_description,
-                                  article_text=article_text, url_source=url_source)
-
-            db.session.add(new_article)
-            db.session.commit()
-            article_object = Article.query.filter_by(article_text=article_text).first()
-            article_id = article_object.article_id
-            return redirect("article-closeup/" + str(article_id))
-        else:
-            return redirect("user-articles/" + str(user_id_from_form))
+        Article.create_new_article(article_title, user_id_value,
+                                   article_description,
+                                   article_text, url_source)
+        article_object = Article.get_article_by_article_text(article_text)
+        article_id = article_object.article_id
+        return redirect("article-closeup/" + str(article_id))
     else:
         return redirect("/login")
 
 
 @app.route("/tag-add-process.json", methods=["POST"])
 def tag_add_process():
-    """Takes in two inputs via POST request and adds article to database."""
+    """Takes in two params from form via POST request and adds tag to database."""
 #make sure only the logged in user can add new article
     tag_value = request.form.get("tag_value")
     article_id = request.form.get("article_id")
     user_id_value = session.get("user_id")
 # in future could verify article by same title doesn't exist
     if user_id_value:
-            tag_object = Tag.query.filter_by(tag_value=tag_value).first()
-            if tag_object:
-                tag_id = tag_object.tag_id
-            else:
-                new_tag = Tag(tag_value=tag_value)
-                db.session.add(new_tag)
-                db.session.commit()
-                tag_id = new_tag.tag_id
+        tag_object = Tag.get_tag_by_tag_value(tag_value)
+        if tag_object:
+            tag_id = tag_object.tag_id
+        else:
+            Tag.create_new_tag(tag_value)
+            tag_object = Tag.get_tag_by_tag_value(tag_value)
+            tag_id = tag_object.tag_id
 
-            new_tagging = Tagging(article_id=article_id, tag_id=tag_id)
-            db.session.add(new_tagging)
-            db.session.commit()
-            new_tag_attributes = {"tag_value": tag_value, "tag_id": tag_id, "article_id": article_id}
-            return jsonify(new_tag_attributes)
+        Tagging.create_new_tagging(article_id, tag_id)
+        new_tag_attributes = {"tag_value": tag_value, "tag_id": tag_id, "article_id": article_id}
+        return jsonify(new_tag_attributes)
     else:
         return redirect("/login")
 
@@ -210,9 +200,7 @@ def article_closeup(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
     user_id_value = session.get("user_id")
     article_id = int(article_id)
-    print type(article_id)
-    article_object = Article.query.filter_by(article_id=article_id).first()
-    print article_object
+    article_object = Article.get_article_by_article_id(article_id)
     if user_id_value:
         if article_object.user_id == int(user_id_value):
             boto_session = BotoSession(profile_name="adminuser")
@@ -234,7 +222,7 @@ def article_closeup(article_id):
 def article_edit(article_id):
     """Takes in an article ID and displays that article for playback and edit purposes"""
     user_id_value = session.get("user_id")
-    article_object = Article.query.filter_by(article_id=article_id).first()
+    article_object = Article.get_article_by_article_id(article_id)
     if user_id_value:
         if int(user_id_value) == article_object.user_id:
             return render_template("article_edit.html", article_object=article_object)
@@ -245,25 +233,19 @@ def article_edit(article_id):
 @app.route("/filter-articles/<tag_value>")
 def filter_articles(tag_value):
     """Takes in a tag value via URL and returns user articles with that tag value"""
-    print tag_value
-    print "running route"
     user_id_value = session.get("user_id")
     user_tagged_articles_values = {}
 
     if tag_value == "All Articles":
-        user_tagged_articles = Article.query.filter_by(user_id=user_id_value).all()
+        user_tagged_articles = Article.get_articles_by_user_id(user_id_value)
         for article in user_tagged_articles:
             user_tagged_articles_values[article.article_id] = article.article_title
     else:
-        tag_object = Tag.query.filter_by(tag_value=tag_value).first()
+        tag_object = Tag.get_tag_by_tag_value(tag_value)
         user_tagged_articles = tag_object.articles_with_tag(user_id_value)
-        print user_tagged_articles[0]
-        # articles_for_tag = tag_object.articles
-        # article_objects = articles_for_tag.filter_by(user_id=user_id_value).all()
         for article in user_tagged_articles:
             user_tagged_articles_values[article.article_id] = article.article_title
-    # article_objects = Article.query.filter(Article.tags.any(Tagging.tag_value == tag_label), Article.user_id == user_id_value).all()
-    # db.session.query(Article).join(Tagging).filter(Tagging)
+
     return jsonify(user_tagged_articles_values)
 
 
@@ -271,15 +253,8 @@ def filter_articles(tag_value):
 def delete_article(article_id):
     """Takes in an article id via URL and deletes article with that article id"""
     user_id = session.get("user_id")
-    article_object = Article.query.filter_by(article_id=article_id).first()
-    taggings_objects = Tagging.query.filter_by(article_id=article_id).all()
-
-    for tagging in taggings_objects:
-        db.session.delete(tagging)
-        db.session.commit()
-
-    db.session.delete(article_object)
-    db.session.commit()
+    Article.get_article_by_article_id(article_id)
+    Tagging.delete_taggings_with_article_id(article_id)
     return redirect("/user-articles/" + str(user_id))
 
 
@@ -288,12 +263,8 @@ def delete_tag():
     """Takes in form values via post request in URL URL and deletes tag from database"""
     tag_id = request.form.get("tag_id")
     article_id = request.form.get("article_id")
-    tagging_object = Tagging.query.filter(Tagging.tag_id == tag_id, Tagging.article_id == article_id).first()
-    db.session.delete(tagging_object)
-    db.session.commit()
+    Tagging.delete_tagging_object(tag_id, article_id)
     tag_dictionary = {"tag_id": tag_id}
-    print tag_dictionary["tag_id"]
-    print "finished commit"
     return jsonify(tag_dictionary)
 
 
@@ -307,7 +278,7 @@ def read_text():
         text = request.args.get("text")
         voice_id = request.args.get("voice")
         article_id = request.args.get("article_id")
-        article_object = Article.query.filter_by(article_id=int(article_id)).one()
+        article_object = Article.get_article_by_article_id(int(article_id))
         if int(user_id_value) == article_object.user_id:
             response = polly.synthesize_speech(Text=text,
                                                VoiceId=voice_id,
@@ -315,7 +286,6 @@ def read_text():
 
             audio_stream = response.get("AudioStream")
 
-            article_object = Article.query.filter_by(article_id=article_id).first()
             if "user_id" in session:
                 session_user_id = session["user_id"]
                 if article_object.user_id == session_user_id:
@@ -340,7 +310,7 @@ def read_text():
 @app.route("/user-profile")
 def user_articles_react():
     user_id_value = session.get("user_id")
-    return render_template("user_profile_react.html", user_id=user_id_value) 
+    return render_template("user_profile_react.html", user_id=user_id_value)
 
 
 @app.route("/user_info_profile.json", methods=["GET"])
@@ -349,7 +319,7 @@ def return_profile_info():
     # user_id_value = session.get("user_id")
     print session
     print user_id_value
-    user_object = User.query.filter_by(user_id=user_id_value).first()
+    user_object = User.get_user_object_by_user_id(user_id_value)
     user_info = {"user_id": user_object.user_id,
                  "username": user_object.username,
                  "f_name": user_object.f_name,

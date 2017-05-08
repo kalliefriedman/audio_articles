@@ -66,9 +66,10 @@ $(document).ready(function(){
                                                 $(newForm).append(tagIdInput);
 
                                                 var submitInput = $("<input>");
+                                                submitInput.attr("class", "filter");
                                                 submitInput.attr("type", "submit");
                                                 submitInput.attr("name", "tag_value");
-                                                submitInput.attr("value", tagValue);
+                                                submitInput.attr("value", tagValue + " x");
                                                 $(newForm).append(submitInput);
 
                                                 newForm.append(newForm);

@@ -13,8 +13,16 @@
 
 {% block content %}
 
-<div class="container-fluid image-container">  
-  <div class="row">
+<div class="container-fluid image-container"> 
+<div class="row">
+  <div class="col-xs-12">
+    <br>
+    <br>
+    <br>
+  </div>
+</div> 
+  
+<div class="row">
 
     <div class="col-xs-8 col-xs-offset-2 product-description-column">
       {% with messages = get_flashed_messages() %}
@@ -26,9 +34,9 @@
         </ul>
         {% endif %}
       {% endwith %}
-<br><br>
-    <h1>Welcome to Audio Articles</h1>      
-    <span id="audio_articles_summary">
+      <br><br>
+      <h1>Welcome to Audio Articles</h1>      
+      <span id="audio_articles_summary">
       <p>
       Register to save your articles, access them later and have them read aloud to you!
       </p>
