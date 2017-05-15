@@ -29,6 +29,7 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(50), nullable=True)
 
+# four way relationship from users table over to tags table, stepping through taggingss and articles
     tags = db.relationship("Tag",
                            primaryjoin='User.user_id == Article.user_id',
                            secondary='join(Article, Tagging, Article.article_id == Tagging.article_id)',
@@ -44,17 +45,20 @@ class User(db.Model):
 
     @classmethod
     def get_user_object_by_email(cls, input_email):
+        """Takes in an input email and returns first user with that email"""
         user_by_email = cls.query.filter_by(email=input_email).first()
         return user_by_email
 
     @classmethod
     def get_user_object_by_username(cls, input_username):
+        """takes in username and returns first user with that username"""
         user_by_username = cls.query.filter_by(username=input_username).first()
         return user_by_username
 
     @classmethod
     def create_new_user(cls, username, f_name, l_name, password, email,
                         phone, password_salt):
+        """takes in user attributes and adds that user to database"""
         new_user = cls(username=username, f_name=f_name, l_name=l_name, password=password, email=email,
                        phone=phone, password_salt=password_salt)
         db.session.add(new_user)
@@ -62,6 +66,7 @@ class User(db.Model):
 
     @classmethod
     def get_user_object_by_user_id(cls, user_id):
+        """takes in a userID and returns first user with that userID"""
         user_object = cls.query.filter_by(user_id=user_id).first()
         return user_object
 
@@ -99,17 +104,20 @@ class Article(db.Model):
 
     @classmethod
     def get_article_by_article_text(cls, article_text):
+        """takes in article text and returns first article object with that text"""
         article_object = cls.query.filter_by(article_text=article_text).first()
         return article_object
 
     @classmethod
     def get_article_by_article_id(cls, article_id):
+        """takes in article ID and returns first article object with that article ID"""
         article_object = cls.query.filter_by(article_id=article_id).first()
         return article_object
 
     @classmethod
     def create_new_article(cls, article_title, user_id, article_description,
                            article_text, url_source):
+        """takes in article attributes and add a new article to database, returning None"""
         new_article = cls(article_title=article_title, user_id=user_id,
                           article_description=article_description,
                           article_text=article_text, url_source=url_source)
@@ -118,11 +126,13 @@ class Article(db.Model):
 
     @classmethod
     def get_articles_by_user_id(cls, user_id):
+        """takes in user id and returns all article objects with that userID"""
         article_objects = cls.query.filter_by(user_id=user_id).all()
         return article_objects
 
     @classmethod
     def delete_article_with_article_id(cls, article_id):
+        """deletes article with a specific articleID parameter, returns none"""
         article_object = cls.query.filter_by(article_id=article_id).first()
         db.session.delete(article_object)
         db.session.commit()
@@ -138,19 +148,22 @@ class Tag(db.Model):
 
     def __repr__(self):
         """Provide helpful representation when printed."""
-
         return "%s" % (self.tag_value)
 
+    # articles for a specific user with a specific tag value, had to use manual join due to two filters in differnt tables
     def articles_with_tag(self, user_id):
+        """Takes in userID, returns article objects with a particular tag value for a specific user"""
         return db.session.query(Article).join(Tagging).filter(Tagging.tag_id == self.tag_id, Article.user_id == user_id).all()
 
     @classmethod
     def get_tag_by_tag_value(cls, tag_value):
+        """passing in a particular tag value, returns tag object with that tag value"""
         tag_object = cls.query.filter_by(tag_value=tag_value).first()
         return tag_object
 
     @classmethod
     def create_new_tag(cls, tag_value):
+        """given a tag value, creates a new tag with that tag value"""
         new_tag = cls(tag_value=tag_value)
         db.session.add(new_tag)
         db.session.commit()
@@ -167,18 +180,19 @@ class Tagging(db.Model):
 
     def __repr__(self):
         """Provide helpful representation when printed."""
-
         return ("<Tagging taggings_id=%s article_id=%s tag_id=%s>" % (self.tagging_id,
                 self.article_id, self.tag_id))
 
     @classmethod
     def create_new_tagging(cls, article_id, tag_id):
-            new_tagging = cls(article_id=article_id, tag_id=tag_id)
-            db.session.add(new_tagging)
-            db.session.commit()
+        """given a tag id and article id, creates a new new tagging and returns None"""
+        new_tagging = cls(article_id=article_id, tag_id=tag_id)
+        db.session.add(new_tagging)
+        db.session.commit()
 
     @classmethod
     def delete_taggings_with_article_id(cls, article_id):
+        """given an articleID, deletes all taggings for that article, returns None"""
         taggings_objects = cls.query.filter_by(article_id=article_id).all()
         for tagging in taggings_objects:
             db.session.delete(tagging)
@@ -186,6 +200,7 @@ class Tagging(db.Model):
 
     @classmethod
     def delete_tagging_object(cls, tag_id, article_id):
+        """given a tagID and articleID, deletes the single tagging associated with those params. Returns None."""
         tagging_object = cls.query.filter(Tagging.tag_id == tag_id,
                                           Tagging.article_id == article_id).first()
         db.session.delete(tagging_object)

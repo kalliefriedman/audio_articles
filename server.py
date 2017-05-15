@@ -23,9 +23,10 @@ app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 
-@app.route('/')
+@app.route('/', methods=["GET"])
 def index():
     """Renders homepage if user isn't logged in. Otherwise redirects user to user-articles."""
+    # gets user id from session
     user_id_value = session.get("user_id")
     if user_id_value:
         return redirect("user-articles/" + str(user_id_value))
@@ -60,7 +61,6 @@ def register_process():
         return redirect("user-articles/" + str(user_id_value))
     else:
         user_object_by_email = User.get_user_object_by_email(email)
-        print user_object_by_email
         if user_object_by_email is None:
             User.create_new_user(username, f_name, l_name, password, email,
                                  phone, password_salt)
@@ -203,15 +203,14 @@ def article_closeup(article_id):
     article_object = Article.get_article_by_article_id(article_id)
     if user_id_value:
         if article_object.user_id == int(user_id_value):
+            #using credentials for adminuser
             boto_session = BotoSession(profile_name="adminuser")
             polly = boto_session.client("polly")
-
-            # text = request.args.get("text")
-            # voiceId = request.args.get("voiceId")
-            # outputFormat = request.args.get("outputFormat")
             response = polly.describe_voices()
             all_voices = response.get('Voices')
-            return render_template("article_closeup.html", article_object=article_object, all_voices=all_voices)
+            return render_template("article_closeup.html",
+                                   article_object=article_object,
+                                   all_voices=all_voices)
         else:
             return redirect("user-articles/" + str(user_id_value))
     else:
@@ -270,9 +269,10 @@ def delete_tag():
 
 @app.route("/read", methods=["GET"])
 def read_text():
-    """Takes in....."""
+    """Takes in nothing, and returns an audio stream in chunks"""
     user_id_value = session.get("user_id")
     if user_id_value:
+        # finds credentials associated with adminuser profile
         boto_session = BotoSession(profile_name="adminuser")
         polly = boto_session.client("polly")
 
@@ -309,15 +309,18 @@ def read_text():
 
 
 @app.route("/user-profile")
-def user_articles_react():
-    """add a docstring"""
+def user_profile_react():
+    """Takes in nothing and returns template for user profile"""
     user_id_value = session.get("user_id")
-    return render_template("user_profile_react.html", user_id=user_id_value)
+    if user_id_value:
+        return render_template("user_profile_react.html", user_id=user_id_value)
+    else:
+        return redirect("/")
 
 
 @app.route("/user_info_profile.json", methods=["GET"])
 def return_profile_info():
-    """add a docstring"""
+    """passes in userID and returns user info in json"""
     user_id_value = request.args.get('user_id')
     # user_id_value = session.get("user_id")
     print session
