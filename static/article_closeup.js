@@ -2,16 +2,15 @@
 
 "use strict";
 
-
 $(document).ready(function(){
 
     var deletetag = $(".delete-tag");
 
-
+// hiding buttons outlined on base template since they are being replicated on navbar
     $("#audio_controls").hide();
     $("#logout-button").hide();
 
-    // prevents default and makes call to read route, constructing URL, on click
+// prevents default and makes call to read route, constructing URL, on click
     $("#submit_read_request").click(function(evt){
         evt.preventDefault();
         var voiceId = $("#voice-id").val();
@@ -42,7 +41,8 @@ $(document).ready(function(){
         //pack up the form values into an object
         var formData = {"tag_value": tagValue, "article_id": articleId};
         console.log(formData);
-        //make the AJAX request
+        
+        //make the AJAX request and append response to DOM in a form
        $.post("/tag-add-process.json", formData, function(results) {
                                                 console.log(results);
                                                 var tagId = results.tag_id;

@@ -1,12 +1,14 @@
 "use strict";
 
-var UserArticles = React.createClass({
+var UserProfile = React.createClass({
 
+// creating all variables in state, setting them equal to empty data type
     getInitialState: function () {
         return {user_id: "", username: "", f_name: "", l_name: "", 
         password: "", email: "", phone: ""};
     },
 
+// calls function to mount components
     componentDidMount: function () {
         this.getUserInfo();
     },
@@ -55,6 +57,7 @@ var UserArticles = React.createClass({
 
     render: function () {
 
+// creates user profile (dumb component) with states set from above
         var userProfile = (
 
         <div>
@@ -74,11 +77,12 @@ var UserArticles = React.createClass({
 
 });
 
+// gets user ID from the DOM by element id
 var theUserId = $('#id').data('userId');
 
 
 ReactDOM.render(
-    <UserArticles userId={theUserId} />,
+    <UserProfile userId={theUserId} />,
     document.getElementById('root')
     );
 /* end-main */
