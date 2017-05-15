@@ -18,7 +18,6 @@ MarkupSafe==1.0
 npm==0.1.1
 optional-django==0.1.0
 packaging==16.8
-pkg-resources==0.0.0
 psycopg2==2.7.1
 pyparsing==2.2.0
 python-dateutil==2.6.0
