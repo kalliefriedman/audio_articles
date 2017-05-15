@@ -26,12 +26,12 @@
 
     <div class="col-xs-8 col-xs-offset-2 product-description-column">
       {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
+        {% if messages %}
+          <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
         {% endif %}
       {% endwith %}
       <br><br>

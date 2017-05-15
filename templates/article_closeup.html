@@ -26,24 +26,24 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         
-        <ul style="list-style-type:none">
-          <li>
+      <ul style="list-style-type:none">
+        <li>
           <form class="navbar-form navbar-left" action="/user-articles/{{ article_object.user_id }}" method=["POST"]>
-          <button type="submit" class="btn btn-default">View your articles</button>
+            <button type="submit" class="btn btn-default">View your articles</button>
           </form>
-          </li>
+        </li>
 
-          <li>
+        <li>
           <form class="navbar-form navbar-left" action="/article-edit/{{ article_object.article_id }}">
-          <button type="submit" class="btn btn-default">Edit article</button>
+            <button type="submit" class="btn btn-default">Edit article</button>
           </form>
-          </li>
+        </li>
         
-          <li>
+        <li>
           <form class="navbar-form navbar-left" action="/delete-article/{{ article_object.article_id }}" method="POST">
-          <button type="submit" class="btn btn-default">Delete article</button>
+            <button type="submit" class="btn btn-default">Delete article</button>
           </form>
-          </li>
+        </li>
 
       
       <ul class="nav navbar-nav navbar-right" style="list-style-type:none">
@@ -52,13 +52,13 @@
         </li>
     {% if session.get("user_id") %}
         <li>
-        <form class="navbar-form navbar-right" action="/logout" method="POST">
-        <button type="submit" class="btn btn-default">Logout</button>
-        </form>
+          <form class="navbar-form navbar-right" action="/logout" method="POST">
+            <button type="submit" class="btn btn-default">Logout</button>
+          </form>
         </li>
     {% endif %}
-          </ul>
-          </ul>
+        </ul>
+      </ul>
 
 
     </div><!-- /.navbar-collapse -->
@@ -119,9 +119,9 @@
       <h1>{{ article_object.article_title }}</h1>
       <br>
         {% if article_object.article_description %}
-        <b>Description:</b> {{ article_object.article_description }}
-        <br><br>
-          {% endif %}
+          <b>Description:</b> {{ article_object.article_description }}
+          <br><br>
+        {% endif %}
 
           <b>Text:</b> {{ article_object.article_text }} 
           <br><br>
@@ -135,14 +135,14 @@
             <br><br>
           {% endif %}
 
-      {% if article_object.last_listened %}
+        {% if article_object.last_listened %}
           <b>Last Listened:</b> {{ article_object.last_listened.strftime('%m-%d-%Y %I:%M%p') }}
           <br><br>
-      {% endif %}
-    </div>
+        {% endif %}
+      </div>
 
+    </div>
   </div>
-</div>
 
 
 

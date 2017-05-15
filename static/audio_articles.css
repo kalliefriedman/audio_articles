@@ -57,6 +57,8 @@ html {
     font-size: 1.25em;
 }
 
+/*includes a background div in white
+*/
 .article-column {
     color: #492533;
     font-family: "Courier New", Courier;
@@ -122,7 +124,9 @@ h4 {
     margin-right: 300px;
 }
 
-/*#492533
+/* main color palette used in project
+#492533
 #DECAB1
 #4A3533
-#99A7AB*/
+#99A7AB
+*/

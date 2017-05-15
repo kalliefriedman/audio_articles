@@ -1,3 +1,5 @@
+// this has not yet been integrated, this is a component for user profile page
+
 var React = require('react');
 
 var buttonStyle = {

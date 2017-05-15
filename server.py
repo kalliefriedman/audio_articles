@@ -1,5 +1,5 @@
 """Routes."""
-
+from os import environ
 from jinja2 import StrictUndefined
 
 from flask import (Flask, Response, render_template, redirect, request, flash,
@@ -270,6 +270,7 @@ def delete_tag():
 
 @app.route("/read", methods=["GET"])
 def read_text():
+    """Takes in....."""
     user_id_value = session.get("user_id")
     if user_id_value:
         boto_session = BotoSession(profile_name="adminuser")
@@ -309,12 +310,14 @@ def read_text():
 
 @app.route("/user-profile")
 def user_articles_react():
+    """add a docstring"""
     user_id_value = session.get("user_id")
     return render_template("user_profile_react.html", user_id=user_id_value)
 
 
 @app.route("/user_info_profile.json", methods=["GET"])
 def return_profile_info():
+    """add a docstring"""
     user_id_value = request.args.get('user_id')
     # user_id_value = session.get("user_id")
     print session
@@ -341,7 +344,7 @@ if __name__ == "__main__":
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
-    app.run(port=5000, host='0.0.0.0')
+    app.run(port=int(environ.get("PORT", 5000)), host='0.0.0.0')
     # from gevent.wsgi import WSGIServer
     # http_server = WSGIServer(('', 5000), app)
     # http_server.serve_forever()
