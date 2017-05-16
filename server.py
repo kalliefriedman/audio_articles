@@ -11,7 +11,6 @@ from model import User, Article, Tag, Tagging, connect_to_db, db
 
 from boto3 import Session as BotoSession
 from datetime import datetime
-from secrets.sh import ACCESS_KEY, SECRET_KEY
 
 #creating flask app
 app = Flask(__name__)
@@ -205,7 +204,8 @@ def article_closeup(article_id):
     if user_id_value:
         if article_object.user_id == int(user_id_value):
             #using credentials for adminuser
-            boto_session = BotoSession(profile_name="adminuser")
+            boto_session = BotoSession(aws_access_key_id=environ['ACCESS_KEY'],
+                aws_secret_access_key=environ['SECRET_KEY'])   
             polly = boto_session.client("polly")
             response = polly.describe_voices()
             all_voices = response.get('Voices')
@@ -274,8 +274,8 @@ def read_text():
     user_id_value = session.get("user_id")
     if user_id_value:
         # finds credentials associated with adminuser profile
-        boto_session = BotoSession(AWS_ACCESS_KEY_ID=ACCESS_KEY,
-                                   AWS_SECRET_ACCESS_KEY=SECRET_KEY)
+        boto_session = BotoSession(aws_access_key_id=environ['ACCESS_KEY'],
+                aws_secret_access_key=environ['SECRET_KEY'])
         polly = boto_session.client("polly")
 
         text = request.args.get("text")
