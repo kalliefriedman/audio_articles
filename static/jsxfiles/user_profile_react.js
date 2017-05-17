@@ -80,7 +80,7 @@ var UserProfile = React.createClass({
 // gets user ID from the DOM by element id
 var theUserId = $('#id').data('userId');
 
-
+// rendering the user profile class 
 ReactDOM.render(
     <UserProfile userId={theUserId} />,
     document.getElementById('root')

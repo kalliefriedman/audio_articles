@@ -22,18 +22,22 @@ class TestLoggedOut(unittest.TestCase):
     def testHomepage(self):
         result = self.client.get('/')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Welcome to Audio Articles")
 
     def testRegister(self):
         result = self.client.get('/register')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Register")
 
     def testLogin(self):
         result = self.client.get('/login')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Login")
 
     def testCreateArticle(self):
         result = self.client.get('/create-article')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Login")
 
     def testUserArticles(self):
         example_data_users()
@@ -42,6 +46,7 @@ class TestLoggedOut(unittest.TestCase):
         example_data_taggings()
         result = self.client.get('/user-articles/1')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Login")
 
     def testArticleCloseup(self):
         example_data_users()
@@ -50,6 +55,7 @@ class TestLoggedOut(unittest.TestCase):
         example_data_taggings()
         result = self.client.get('/article-closeup/1')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Login")
 
     def testArticleEdit(self):
         example_data_users()
@@ -58,6 +64,7 @@ class TestLoggedOut(unittest.TestCase):
         example_data_taggings()
         result = self.client.get('/article-edit/1')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Login")
 
     def testRead(self):
         result = self.client.get('/read', data={'text': "Hi this is a test",
@@ -91,30 +98,37 @@ class TestLoggedIn(unittest.TestCase):
     def testHomepage(self):
         result = self.client.get('/')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Welcome,")
 
     def testRegister(self):
         result = self.client.get('/register')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Welcome,")
 
     def testLogin(self):
         result = self.client.get('/login')
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Welcome,")
 
     def testCreateArticle(self):
         result = self.client.get('/create-article', query_string={'user_id_from_form': "1"})
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Title:")
 
     def testUserArticles(self):
         result = self.client.get('/user-articles/1')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Welcome")
 
     def testArticleCloseup(self):
         result = self.client.get('/article-closeup/1')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Select a voice:")
 
     def testArticleEdit(self):
         result = self.client.get('/article-edit/1')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Title:")
 
     def testRead(self):
         result = self.client.get('/read', query_string={'text': "Hi this is a test",
@@ -132,6 +146,7 @@ class TestLoggedIn(unittest.TestCase):
                                         'password_salt': ""},
                                   )
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Welcome,")
 
     def testArticleAddProcess(self):
         result = self.client.post('/article-add-process',
@@ -146,10 +161,13 @@ class TestLoggedIn(unittest.TestCase):
                                   data={"username_or_email": 'kallies@yahoo.com', "password": "password"},
                                   )
         self.assertEqual(result.status_code, 302)
+        self.assertIn("Welcome,")
 
     def testTagAddProcess(self):
         result = self.client.post('/tag-add-process.json', data={"tag_value": "sample tag", "article_id": "1", "user_id_value": "1"})
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Title:")
+
 
     def testFilterArticlesByTag(self):
         result = self.client.get('/filter-articles/Recent')
@@ -166,8 +184,9 @@ class TestLoggedIn(unittest.TestCase):
     def testUserProfile(self):
         result = self.client.get('/user-profile')
         self.assertEqual(result.status_code, 200)
+        self.assertIn("Username:")
 
-
+# need to test everything from here down for logic and syntax
 class TestDatabase(unittest.TestCase):
     """Flask tests that use the database."""
 
@@ -177,6 +196,7 @@ class TestDatabase(unittest.TestCase):
         self.client = app.test_client()
         app.config['TESTING'] = True
         connect_to_db(app, "postgresql:///testdb")
+        db.create_all()
         example_data_users()
         example_data_articles()
         example_data_tags()
@@ -184,33 +204,27 @@ class TestDatabase(unittest.TestCase):
 
         with self.client as c:
             with c.session_transaction() as sess:
-                sess[''] = True
-        db.create_all()
+                sess["user_id"] = 1
 
     def tearDown(self):
         """Do at end of every test."""
         db.session.close()
         db.drop_all()
 
+    def testUsersData(self):
+        """Testing user data format is correct"""
+        result = self.client.get("/games")
+        self.assertIn("Power Grid", result.data)
 
-    # def testUsersData(self):
-    #     """Testing user data format is correct"""
+    def testArticlesData(self):
+        """Testing article data format is correct"""
+        result = self.client.get("/user_articles/1")
+        self.assertIn("Kallie", result.data)
 
-    # def testArticlesData(self):
-    #     """Testing article data format is correct"""
-
-    # def testTagsData(self):
-    #     """Testing tags data format is correct"""
-
-    # def testTaggingsData(self):
-    #     """Testing taggings data format is correct"""
-
-    # def testBackrefs(self):
-    #     """Test that backrefs work correctly as expected"""
-
-    #     result = self.client.get("/games", data={'session["RSVP"]': True})
-    #     self.assertIn("Clue", result.data)
-
+    def testTagsData(self):
+        """Testing tags data format is correct"""
+        result = self.client.get("/user_articles/1")
+        self.assertIn("Recent", result.data)
 
 if __name__ == "__main__":
     unittest.main()
