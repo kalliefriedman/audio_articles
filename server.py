@@ -12,21 +12,6 @@ from model import User, Article, Tag, Tagging, connect_to_db, db
 from boto3 import Session as BotoSession
 from datetime import datetime
 
-# import the CryptContext class, used to handle all hashing
-from passlib.context import CryptContext
-# create a single global instance for your app...
-#
-pwd_context = CryptContext(
-    # Replace this list with the hash(es) you wish to support.
-    # this example sets pbkdf2_sha256 as the default,
-    # with additional support for reading legacy des_crypt hashes.
-    schemes=["argon2"],
-    # Automatically mark all but first hasher in list as deprecated.
-    # (this will be the default in Passlib 2.0)
-    deprecated="auto",
-    )
-
-# use https://passlib.readthedocs.io/en/stable/narr/quickstart.html to finish password hashing
 
 #creating flask app
 app = Flask(__name__)
@@ -293,9 +278,9 @@ def read_text():
     if user_id_value:
         # finds credentials associated with adminuser profile
         boto_session = BotoSession(aws_access_key_id=environ['ACCESS_KEY'],
-                aws_secret_access_key=environ['SECRET_KEY'],
-                region_name=environ['AWS_DEFAULT_REGION'],
-                profile_name=environ['AWS_USERNAME'])
+                                   aws_secret_access_key=environ['SECRET_KEY'],
+                                   region_name=environ['AWS_DEFAULT_REGION'],
+                                   profile_name=environ['AWS_USERNAME'])
         polly = boto_session.client("polly")
 
         text = request.args.get("text")
@@ -361,7 +346,7 @@ def return_profile_info():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
 
     connect_to_db(app)
