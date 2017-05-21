@@ -3,12 +3,11 @@
 {% block page_specific_js %} 
 <script src="http://unpkg.com/react/dist/react.js"></script>
 <script src="http://unpkg.com/react-dom/dist/react-dom.js"></script>
-<script src="http://unpkg.com/babel-standalone"></script>
 {% endblock %}
 
 {% block content %}
 <div id="root"></div>
 <span data-user-id="{{ user_id }}" id="id"></span>
 
-<script src="/static/jsxfiles/user_profile_react.js" type="text/jsx"></script>  
+<script src="../bundle.js" type="text/jsx"></script>  
 {% endblock %}

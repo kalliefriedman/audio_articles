@@ -124,6 +124,15 @@ h4 {
     margin-right: 300px;
 }
 
+.profile-info-column {
+    color: #492533;
+    font-family: "Courier New", Courier;
+    background: rgba(255,255,255,.7);
+    border-radius: 12px;
+    padding-bottom: 194px;
+    font-size: 1.25em;
+}
+
 /* main color palette used in project
 #492533
 #DECAB1
