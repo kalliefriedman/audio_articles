@@ -220,20 +220,20 @@ class TestDatabase(unittest.TestCase):
         db.session.close()
         db.drop_all()
 
-    # def testArticlesData(self):
-    #     """Testing user data format is correct"""
-    #     result = self.client.get("/user_articles/1", follow_redirects=True)
-    #     self.assertIn("Myers Briggs History", result.data)
+    def testArticlesData(self):
+        """Testing user data format is correct"""
+        result = self.client.get('/user-articles/1', follow_redirects=True)
+        self.assertIn("Myers Briggs History", result.data)
 
-    # def testUsersData(self):
-    #     """Testing article data format is correct"""
-    #     result = self.client.get("/user_articles/1", follow_redirects=True)
-    #     self.assertIn("Kallie", result.data)
+    def testUsersData(self):
+        """Testing article data format is correct"""
+        result = self.client.get('/user-articles/1', follow_redirects=True)
+        self.assertIn("Kallie", result.data)
 
-    # def testTagsData(self):
-    #     """Testing tags data format is correct"""
-    #     result = self.client.get("/user_articles/1", follow_redirects=True)
-    #     self.assertIn("Recent", result.data)
+    def testTagsData(self):
+        """Testing tags data format is correct"""
+        result = self.client.get('/user-articles/1', follow_redirects=True)
+        self.assertIn("Recent", result.data)
 
 if __name__ == "__main__":
     unittest.main()
