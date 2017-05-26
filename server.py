@@ -207,8 +207,7 @@ def article_closeup(article_id):
             #using credentials for adminuser
             boto_session = BotoSession(aws_access_key_id=environ['ACCESS_KEY'],
                 aws_secret_access_key=environ['SECRET_KEY'],
-                region_name=environ['AWS_DEFAULT_REGION'],
-                profile_name=environ['AWS_USERNAME'])
+                region_name=environ['AWS_DEFAULT_REGION'])
             polly = boto_session.client("polly")
             response = polly.describe_voices()
             all_voices = response.get('Voices')
@@ -279,8 +278,7 @@ def read_text():
         # finds credentials associated with adminuser profile
         boto_session = BotoSession(aws_access_key_id=environ['ACCESS_KEY'],
                                    aws_secret_access_key=environ['SECRET_KEY'],
-                                   region_name=environ['AWS_DEFAULT_REGION'],
-                                   profile_name=environ['AWS_USERNAME'])
+                                   region_name=environ['AWS_DEFAULT_REGION'])
         polly = boto_session.client("polly")
 
         text = request.args.get("text")
