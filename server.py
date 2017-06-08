@@ -281,16 +281,27 @@ def read_text():
                                    region_name=environ['AWS_DEFAULT_REGION'])
         polly = boto_session.client("polly")
 
+        # get the text from database using article ID rather than sending it via the request to route
         text = request.args.get("text")
         voice_id = request.args.get("voice")
         article_id = request.args.get("article_id")
         article_object = Article.get_article_by_article_id(int(article_id))
-        if int(user_id_value) == article_object.user_id:
-            response = polly.synthesize_speech(Text=text,
-                                               VoiceId=voice_id,
-                                               OutputFormat='mp3')
+        
+        text_sequences = segment_text(text)
 
-            audio_stream = response.get("AudioStream")
+        audio_stream_sequences = []
+
+        for sequence in text_sequences:
+            if int(user_id_value) == article_object.user_id:
+                response = polly.synthesize_speech(Text=sequence,
+                                                   VoiceId=voice_id,
+                                                   OutputFormat='mp3')
+
+                audio_stream = response.get("AudioStream")
+                audio_stream_sequences.append(audio_stream)
+        for stream in audio_stream_sequences:
+            print "streamtype"
+            print type(stream)
 
             if "user_id" in session:
                 session_user_id = session["user_id"]
@@ -300,10 +311,13 @@ def read_text():
                     db.session.commit()
 
             def generate():
-                data = audio_stream.read(1024)
-                while data:
-                    yield data
-                    data = audio_stream.read(1024)
+                index = 0
+                while index < len(audio_stream_sequences):
+                    data = audio_stream_sequences[index].read(1024)
+                    while data:
+                        yield data
+                        data = audio_stream.read(1024)
+                    index += 1
 
             return Response(generate(), mimetype='audio/mpeg')
         else:
@@ -341,10 +355,21 @@ def return_profile_info():
     return jsonify(user_info)
 
 
+def segment_text(text):
+    text_sequences = []
+    beg_string = 0
+    end_string = 1500
+    while beg_string < len(text):
+        text_sequences.append(text[beg_string: end_string])
+        beg_string += 1500
+        end_string += 1500
+    return text_sequences
+
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = False
+    app.debug = True
     app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
 
     connect_to_db(app)

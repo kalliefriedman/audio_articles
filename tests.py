@@ -1,7 +1,7 @@
 from flask import (Flask, Response, render_template, redirect, request, flash,
                    session, jsonify)
 import unittest
-from server import app, session
+from server import app, session, segment_text
 from model import db, connect_to_db, example_data_users, example_data_articles, example_data_tags, example_data_taggings
 
 
@@ -234,6 +234,19 @@ class TestDatabase(unittest.TestCase):
         """Testing tags data format is correct"""
         result = self.client.get('/user-articles/1', follow_redirects=True)
         self.assertIn("Recent", result.data)
+
+
+def testSegment_Text(test_string):
+    result = segment_text(test_string)
+    assert len(result) == 2
+    assert len(result[0]) == 1500
+    assert result[0][0] == "a"
+    assert result[0][-1] == "a"
+    assert len(result[1]) == 3
+    assert result[1][0] == "b"
+    assert result[1][-1] == "b"
+
+testSegment_Text("a"*1500 + "b"*3)
 
 if __name__ == "__main__":
     unittest.main()
